@@ -6,6 +6,7 @@ import peersim.config.*;
 
 public class VirusApp implements EDProtocol {
 
+
     //identifiant de la couche courante (la couche applicative)
     private int mypid;
 
