@@ -5,10 +5,7 @@ import peersim.core.*;
 import peersim.config.*;
 
 /*
-  Module d'initialisation de helloWorld: 
-  Fonctionnement:
-    pour chaque noeud, le module fait le lien entre la couche transport et la couche applicative
-    ensuite, il fait envoyer au noeud 0 un message "Hello" a tous les autres noeuds
+  Module d'initialisation de virusApp:
  */
 public class Initializer implements peersim.core.Control {
     
@@ -22,7 +19,7 @@ public class Initializer implements peersim.core.Control {
 
     public boolean execute() {
         int nodeNb;
-        VirusApp appEmitter, current;
+        VirusApp appEmitter, destApp;
         Node dest;
         VirusMessage virusMessage;
 		System.out.println("ça marche");
@@ -34,16 +31,18 @@ public class Initializer implements peersim.core.Control {
             System.err.println("Network size is not positive");
             System.exit(1);
         }
-
+        // on recupere la couche applicative et on lui associe le numéro de son noeud
         appEmitter = (VirusApp)Network.get(0).getProtocol(this.virusAppPid);
-//        appEmitter.setTransportLayer(0);
-        System.out.println("le noeud emmeteur " + appEmitter);
-        for (int i = 1; i < nodeNb; i++) {
-            dest = Network.get(i);
+        appEmitter.setNodeId(0);
 
-            current = (VirusApp) dest.getProtocol(dest.get);
-            System.out.println(current);
-//            current.setTransportLayer(i);
+        // pour tous les autres noeuds du graph
+        for (int i = 1; i < nodeNb; i++) {
+
+            dest = Network.get(i);
+            // on recupere la couche applicative et on lui associe le numéro de son noeud
+            destApp = (VirusApp)dest.getProtocol(this.virusAppPid);
+            destApp.setNodeId(i);
+            //on envoit via la couche applicative au destinataire
             appEmitter.send(virusMessage, dest);
         }
 

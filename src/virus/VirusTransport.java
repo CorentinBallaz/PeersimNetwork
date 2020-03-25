@@ -24,8 +24,5 @@ public class VirusTransport implements Protocol{
     }
 
 
- /*   //latence random entre la borne min et la borne max
-    public long getLatency(Node src, Node dest) {
-        return (range==1?min:min + CommonState.r.nextLong(range));
-    }*/
+
 }
