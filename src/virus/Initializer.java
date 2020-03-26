@@ -10,19 +10,19 @@ import peersim.config.*;
   Module d'initialisation de virusApp:
  */
 public class Initializer implements peersim.core.Control {
-    
+
     private int virusAppPid;
 
 
     public Initializer(String prefix) {
     //recuperation du pid de la couche applicative
-        System.out.println(Network.size());
         this.virusAppPid = Configuration.getPid(prefix+ ".virusAppProtocolPid");
         
     }
     public void ajoutVoisins(){
-        int minVoisins = 1;//Configuration.getPid("nbVoisinsMin");
-        int maxVoisins = 10;//Configuration.getPid("nbVoisinsMax");
+        //int minVoisins = Configuration.getString("node.nbVoisinsMin");
+        int minVoisins = Configuration.getInt("node.nbVoisinsMin");
+        int maxVoisins = Configuration.getInt("node.nbVoisinsMax");
         int range = maxVoisins - minVoisins + 2;
         int rangeNetwork = Network.size();
         for(int i=0;i<rangeNetwork;i++){
