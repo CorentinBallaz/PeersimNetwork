@@ -122,6 +122,7 @@ public class Initializer implements peersim.core.Control {
         //ajout des voisins pour chaque noeud
         
         for (int node=0; node<nodeNb; node++) {
+        	
         	Random r = new Random();
         	currentNode = Network.get(node);
         	currentNodeApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
@@ -136,9 +137,14 @@ public class Initializer implements peersim.core.Control {
         	int randomYear = r.nextInt(maxYearOld - minYearOld) + minYearOld;
         	currentNodeApp.setYearOld(randomYear);
         	
+        	currentNodeApp.setState("Clean");
+        	currentNodeApp.setIsVaccined(false);
+        	
         	
         	System.out.println("Year Old : "+currentNodeApp.getYearOld());
         	System.out.println("Going out Frequency : "+currentNodeApp.getGoingOutFrequency());
+        	System.out.println("I'm vaccined : "+currentNodeApp.getIsVaccined());
+        	System.out.println("What's is my state : "+currentNodeApp.getState());
         }
         
         this.ajoutVoisins();

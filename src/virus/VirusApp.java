@@ -25,6 +25,12 @@ public class VirusApp implements EDProtocol {
     
     // ajout de l'âge d'une personne
     private int yearOld;
+    
+    // ajout de l'état d'une personne
+    private String state;
+    
+    // ajout de si la personne est vaccinée
+    private boolean isVaccined;
 
     // ajout de la liste de voisins pour de petits noeuds
     private ArrayList listVoisins;
@@ -56,6 +62,22 @@ public class VirusApp implements EDProtocol {
     
     public int getYearOld() {
     	return yearOld;
+    }
+    
+    public void setState(String state) {
+    	this.state = state;
+    }
+    
+    public String getState() {
+    	return state;
+    }
+    
+    public void setIsVaccined(boolean isVaccined) {
+    	this.isVaccined = isVaccined;
+    }
+    
+    public boolean getIsVaccined() {
+    	return isVaccined;
     }
     
     public ArrayList getListVoisins() {
