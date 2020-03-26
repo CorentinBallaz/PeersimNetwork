@@ -19,6 +19,12 @@ public class VirusApp implements EDProtocol {
 
     // ajout de la probabilitÃ© de contaminer quelqu'un
     private double probConta;
+    
+    // ajout de la fréquence de sortie (en jour)
+    private int goingOutFrequency;
+    
+    // ajout de l'âge d'une personne
+    private int yearOld;
 
     // ajout de la liste de voisins pour de petits noeuds
     private ArrayList listVoisins;
@@ -35,7 +41,23 @@ public class VirusApp implements EDProtocol {
     public void setProbConta(double probConta) {
         this.probConta = probConta;
     }
-
+    
+    public void setGoingOutFrequency(int frequency) {
+    	this.goingOutFrequency = frequency;
+    }
+    
+    public int getGoingOutFrequency() {
+    	return goingOutFrequency;
+    }
+    
+    public void setYearOld(int yearOld) {
+    	this.yearOld = yearOld;
+    }
+    
+    public int getYearOld() {
+    	return yearOld;
+    }
+    
     public ArrayList getListVoisins() {
         return listVoisins;
     }

@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import peersim.edsim.*;
+import sun.security.krb5.Config;
 import peersim.core.*;
 import peersim.config.*;
 
@@ -113,14 +114,38 @@ public class Initializer implements peersim.core.Control {
 
     public boolean execute() {
         int nodeNb;
-        VirusApp appEmitter, destApp;
-        Node dest;
+        VirusApp appEmitter, destApp, currentNodeApp;
+        Node dest, currentNode;
         VirusMessage virusMessage;
 		System.out.println("ça marche");
 		//Taille reseau
         nodeNb = Network.size();
         //ajout des voisins pour chaque noeud
+        
+        for (int node=0; node<nodeNb; node++) {
+        	Random r = new Random();
+        	currentNode = Network.get(node);
+        	currentNodeApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
+        	
+        	int minGoingOutFrequency = Configuration.getInt("minGoingOutFrequency");
+        	int maxGoingOutFrequency = Configuration.getInt("maxGoingOutFrequency");
+        	int randomFrequency = r.nextInt(maxGoingOutFrequency - minGoingOutFrequency) + minGoingOutFrequency;
+        	currentNodeApp.setGoingOutFrequency(randomFrequency);
+        	
+        	int minYearOld = Configuration.getInt("minYearOld");
+        	int maxYearOld = Configuration.getInt("maxYearOld");
+        	int randomYear = r.nextInt(maxYearOld - minYearOld) + minYearOld;
+        	currentNodeApp.setYearOld(randomYear);
+        	
+        	
+        	System.out.println("Year Old : "+currentNodeApp.getYearOld());
+        	System.out.println("Going out Frequency : "+currentNodeApp.getGoingOutFrequency());
+        }
+        
         this.ajoutVoisins();
+        
+        
+        
 		//Creation message
         virusMessage = new VirusMessage(0,"Infected");
         if (nodeNb < 1) {
