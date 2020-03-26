@@ -26,10 +26,10 @@ public class VirusApp implements EDProtocol {
     // ajout de l'age d'une personne
     private int yearOld;
     
-    // ajout de l'état d'une personne
+    // ajout de l'ï¿½tat d'une personne
     private String state;
     
-    // ajout de si la personne est vaccinée
+    // ajout de si la personne est vaccinï¿½e
     private boolean isVaccined;
 
     // ajout de la liste de voisins pour de petits noeuds
@@ -112,9 +112,14 @@ public class VirusApp implements EDProtocol {
 
     //Partie concernat l'envoi de message
     //envoi d'un message (l'envoi se fait via la couche applicative directement)
-public void send(VirusMessage msg, Node dest) {
+    public boolean send(VirusMessage msg, Node dest, double proba) { 
+        boolean res = false;       
+        if(Math.random() < proba){
         //methode permettant d'ajouter des evements Ã  la file
-        EDSimulator.add((long)0,msg,dest,this.mypid);
+            EDSimulator.add((long)0,msg,dest,this.mypid);
+            res = true;
+        }
+        return res;
     }
 
     // Partie concernant la reception du message
