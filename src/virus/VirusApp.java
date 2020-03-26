@@ -110,9 +110,10 @@ public class VirusApp implements EDProtocol {
         return "Node "+ this.nodeId;
     }
 
-    //Partie concernat l'envoi de message
+    //Partie concernant l'envoi de message
     //envoi d'un message (l'envoi se fait via la couche applicative directement)
     public boolean send(VirusMessage msg, Node dest, double proba) { 
+        //retourne un booléen qui dit si le noeud est infecté ou non
         boolean res = false;       
         if(Math.random() < proba){
         //methode permettant d'ajouter des evements à la file

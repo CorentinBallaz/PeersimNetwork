@@ -111,6 +111,7 @@ public class Initializer implements peersim.core.Control {
         	Random r = new Random();
         	currentNode = Network.get(node);
             currentNodeApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
+
             currentNodeApp.setNodeId(node);
         	
         	int minGoingOutFrequency = Configuration.getInt("minGoingOutFrequency");
@@ -144,22 +145,25 @@ public class Initializer implements peersim.core.Control {
             System.err.println("Network size is not positive");
             System.exit(1);
         }
-        // on recupere la couche applicative et on lui associe le numéro de son noeud
+        // on met le status infecté au n premier noeud demandé (nbNodeInfected dans config)
         for (int infectedNode=0;infectedNode<Configuration.getInt("nbNodeInfected");infectedNode++){
-            appEmitter = (VirusApp)Network.get(infectedNode).getProtocol(this.virusAppPid);
-            appEmitter.setState("Infected");
+            appInfected = (VirusApp)Network.get(infectedNode).getProtocol(this.virusAppPid);
+            appInfected.setState("Infected");
         }
 
         // pour tous les autres noeuds du graph
         for (int i = 0; i < nodeNb; i++) {
             VirusApp appEmitter2 = (VirusApp)Network.get(i).getProtocol(this.virusAppPid);
+            //on check si l'émetteur est infecté
             if(appEmitter2.getState()=="Infected"){
                 double prob = appEmitter2.getProbConta();
+                //s'il est infecté, on parcourt la liste de ses voisins
                 for(int j = 0; j < appEmitter2.getListVoisins().size();j++){
                     int currentNodeID = appEmitter2.getListVoisins().get(j);
                     dest = Network.get(currentNodeID);
                     destApp = (VirusApp)dest.getProtocol(this.virusAppPid);
                     //on envoit via la couche applicative au destinataire
+                    //on regarde la réponse de la fonction send afin de changer l'etat du noeud infecté
                     if(appEmitter2.send(virusMessage, dest, prob)){
                         destApp.setState("Infected");
                     }
