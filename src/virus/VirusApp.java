@@ -20,14 +20,14 @@ public class VirusApp implements EDProtocol {
     // ajout de la probabilitÃ© de contaminer quelqu'un
     private double probConta;
     
-    // ajout de la fréquence de sortie (en jour)
+    // ajout de la frequence de sortie (en jour)
     private int goingOutFrequency;
     
-    // ajout de l'âge d'une personne
+    // ajout de l'age d'une personne
     private int yearOld;
 
     // ajout de la liste de voisins pour de petits noeuds
-    private ArrayList listVoisins;
+    private ArrayList<Integer> listVoisins;
 
     public VirusApp(String prefix) {
         this.prefix = prefix;
@@ -58,27 +58,16 @@ public class VirusApp implements EDProtocol {
     	return yearOld;
     }
     
-    public ArrayList getListVoisins() {
+    public ArrayList<Integer> getListVoisins() {
         return listVoisins;
     }
 
-    public void setListVoisins(ArrayList listVoisins) {
+    public void setListVoisins(ArrayList<Integer> listVoisins) {
         this.listVoisins = listVoisins;
     }
     public void addVoisins(int numVoisins){
         this.listVoisins.add(numVoisins);
     }
-    // public void addListVoisins(){
-    //     int minVoisins = 1;//Configuration.getPid("nbVoisinsMin");
-    //     int maxVoisins = 5;//Configuration.getPid("nbVoisinsMax");
-    //     int range = maxVoisins - minVoisins + 1;
-    //     int randVoisins = (int)(Math.random() * range) + minVoisins;
-    //     int rangeNetwork = Network.size();
-    //     int[] ints = new Random().ints(1, rangeNetwork).distinct().limit(randVoisins).toArray();
-    //     for(int i=0;i<ints.length;i++){
-    //         System.out.println(ints[i]);
-    //     }         
-    // }
 
     public Object clone() {
         VirusApp dolly = new VirusApp(this.prefix);

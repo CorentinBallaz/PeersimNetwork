@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import peersim.edsim.*;
-import sun.security.krb5.Config;
 import peersim.core.*;
 import peersim.config.*;
 
@@ -21,6 +20,8 @@ public class Initializer implements peersim.core.Control {
         
     }
     public void ajoutVoisins(){
+        ///méthode qui créé pour chaque noeud une liste de voisins qui sont directement reliés à lui;
+        ///associe une arrayList d'entier(s)
         int minVoisins = Configuration.getInt("node.nbVoisinsMin");
         int maxVoisins = Configuration.getInt("node.nbVoisinsMax");
         int range = maxVoisins - minVoisins + 2;
@@ -29,7 +30,6 @@ public class Initializer implements peersim.core.Control {
             Node myNode = Network.get(i);
             // on recupere la couche applicative et on lui associe le numéro de son noeud
             VirusApp destApp = (VirusApp)myNode.getProtocol(this.virusAppPid);
-            ArrayList listVoisins = new ArrayList<>();
             //On check dans les autres noeuds s'il n'y a pas le noeud actuel
             //si oui, on l'ajoute dans notre liste de voisins
             for(int k=0;k<rangeNetwork;k++){
@@ -38,13 +38,8 @@ public class Initializer implements peersim.core.Control {
                     VirusApp currentDestApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
                     try{
                         for(int l=0;l<currentDestApp.getListVoisins().size();l++){
-                            int numVoisin = (int)currentDestApp.getListVoisins().get(l);
-                            boolean isIn = false;
-                            for(int m=0;m<destApp.getListVoisins().size();m++){
-                                if(destApp.getListVoisins().get(m).equals(numVoisin)){
-                                    isIn = true;
-                                }
-                            }
+                            int numVoisin = currentDestApp.getListVoisins().get(l);
+                            boolean isIn = destApp.getListVoisins().contains(numVoisin);
                             if(currentDestApp.getListVoisins().get(l).equals(i) && numVoisin!=i && isIn==false){
                                 destApp.addVoisins(numVoisin);
                             }
@@ -67,42 +62,32 @@ public class Initializer implements peersim.core.Control {
             }
             //je prend des nombres au hasard qui seront mes voisins
             int[] ints = new Random().ints(0,rangeNetwork).distinct().limit(randVoisins).toArray();
-            //System.out.println(ints.length);
             for(int j=0;j<ints.length;j++){
                 int monNb = ints[j];
                 boolean isIn2 = false;
                 //je check si le nb n'est pas deja dans ma liste de voisins
                 try{
-                    for(int n=0;n<destApp.getListVoisins().size();n++){
-                        if(destApp.getListVoisins().get(n).equals(monNb)){
-                            isIn2 = true;
-                        }
-                    }
+                    isIn2 = destApp.getListVoisins().contains(monNb);
                 }catch(Exception e){}
                 if(ints[j]!=i && isIn2==false){
-                    //System.out.println("noeud : " + i + "; voisin : " + monNb);
                     Node verifNode = Network.get(monNb);
                     VirusApp verifDestApp = (VirusApp)verifNode.getProtocol(this.virusAppPid);
                     //Ajout de mon noeud dans le noeud voisin que j'ai tiré aléatoirement
                     try{
                         verifDestApp.addVoisins(i);
-                        //System.out.println("j'ajoute");
                     }catch(Exception e){
-                        ArrayList listVoisins2 = new ArrayList<>();
+                        ArrayList<Integer> listVoisins2 = new ArrayList<Integer>();
                         listVoisins2.add(i);
                         verifDestApp.setListVoisins(listVoisins2);
-                        //System.out.println("Je crée");
                     }
-                    //System.out.println("noeud ajouté : " + verifDestApp.getListVoisins().toString());
                     //j'ajoute le nb tiré dans ma liste de noeuds voisins
                     try{
                         destApp.addVoisins(monNb);
                     }catch(Exception e){
-                        ArrayList listVoisins3 = new ArrayList<>();
+                        ArrayList<Integer> listVoisins3 = new ArrayList<Integer>();
                         listVoisins3.add(monNb);
                         destApp.setListVoisins(listVoisins3);
                     }
-                    //System.out.println("noeud actuel : " + destApp.getListVoisins().toString());
                 }
             }
             //ajout de la proba aléatoire de contamination entre 0 et 1
@@ -135,10 +120,6 @@ public class Initializer implements peersim.core.Control {
         	int maxYearOld = Configuration.getInt("maxYearOld");
         	int randomYear = r.nextInt(maxYearOld - minYearOld) + minYearOld;
         	currentNodeApp.setYearOld(randomYear);
-        	
-        	
-        	System.out.println("Year Old : "+currentNodeApp.getYearOld());
-        	System.out.println("Going out Frequency : "+currentNodeApp.getGoingOutFrequency());
         }
         
         this.ajoutVoisins();
@@ -161,7 +142,7 @@ public class Initializer implements peersim.core.Control {
             // on recupere la couche applicative et on lui associe le numéro de son noeud
             destApp = (VirusApp)dest.getProtocol(this.virusAppPid);
             destApp.setNodeId(i);
-            System.out.println(destApp.toString() + " " + destApp.getListVoisins().toString() + " " + destApp.getProbConta());
+            System.out.println(destApp.toString() + " " + destApp.getListVoisins().toString() + " " + destApp.getProbConta() + " Year Old : "+ destApp.getYearOld() + " Going out Frequency : "+ destApp.getGoingOutFrequency());
             //on envoit via la couche applicative au destinataire
             appEmitter.send(virusMessage, dest);
         }
