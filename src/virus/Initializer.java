@@ -2,7 +2,6 @@ package virus;
 import java.util.ArrayList;
 import java.util.Random;
 
-import peersim.edsim.*;
 import peersim.core.*;
 import peersim.config.*;
 
@@ -98,7 +97,7 @@ public class Initializer implements peersim.core.Control {
 
     public boolean execute() {
         int nodeNb;
-        VirusApp appEmitter, destApp, currentNodeApp;
+        VirusApp destApp, currentNodeApp;
         Node dest, currentNode;
         VirusMessage virusMessage;
 		System.out.println("ça marche");
@@ -147,7 +146,7 @@ public class Initializer implements peersim.core.Control {
         }
         // on met le status infecté au n premier noeud demandé (nbNodeInfected dans config)
         for (int infectedNode=0;infectedNode<Configuration.getInt("nbNodeInfected");infectedNode++){
-            appInfected = (VirusApp)Network.get(infectedNode).getProtocol(this.virusAppPid);
+            VirusApp appInfected = (VirusApp)Network.get(infectedNode).getProtocol(this.virusAppPid);
             appInfected.setState("Infected");
         }
 

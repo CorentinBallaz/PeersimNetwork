@@ -1,7 +1,6 @@
 package virus;
 
 import java.util.ArrayList;
-import java.util.Random;
 import peersim.edsim.*;
 import peersim.core.*;
 import peersim.config.*;
