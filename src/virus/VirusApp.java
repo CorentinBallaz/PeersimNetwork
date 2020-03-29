@@ -1,7 +1,6 @@
 package virus;
 
 import java.util.ArrayList;
-import java.util.Random;
 import peersim.edsim.*;
 import peersim.core.*;
 import peersim.config.*;
@@ -17,8 +16,11 @@ public class VirusApp implements EDProtocol {
     // prefixe de la couche (nom de la variable de protocole du fichier de config)
     private String prefix;
 
-    // ajout de la probabilite de contaminer quelqu'un
-    private double probConta;
+    // ajout de la probabilité de d'infecté quelqu'un
+    private double probToInfect;
+
+    // ajout de la probabilité d'être infecté
+    private double probToBeInfected;
     
     // ajout de la frequence de sortie (en jour)
     private int goingOutFrequency;
@@ -26,10 +28,10 @@ public class VirusApp implements EDProtocol {
     // ajout de l'age d'une personne
     private int yearOld;
     
-    // ajout de l'etat d'une personne
+    // ajout de l'�tat d'une personne
     private String state;
     
-    // ajout de si la personne est vaccinee
+    // ajout de si la personne est vaccin�e
     private boolean isVaccined;
 
     // ajout de la liste de voisins pour de petits noeuds
@@ -40,12 +42,20 @@ public class VirusApp implements EDProtocol {
         this.mypid = Configuration.getPid(prefix + ".myself");
     }
 
-    public double getProbConta() {
-        return probConta;
+    public double getProbToInfect() {
+        return this.probToInfect;
     }
 
-    public void setProbConta(double probConta) {
-        this.probConta = probConta;
+    public void setProbToInfect(double probToInfect) {
+        this.probToInfect = probToInfect;
+    }
+
+    public double getProbToBeInfected() {
+        return this.probToBeInfected;
+    }
+
+    public void setProbToBeInfected(double probToBeInfected) {
+        this.probToBeInfected = probToBeInfected;
     }
     
     public void setGoingOutFrequency(int frequency) {
@@ -110,11 +120,13 @@ public class VirusApp implements EDProtocol {
         return "Node "+ this.nodeId;
     }
 
-    //Partie concernat l'envoi de message
+    //Partie concernant l'envoi de message
     //envoi d'un message (l'envoi se fait via la couche applicative directement)
-public void send(VirusMessage msg, Node dest,Node emit) {
+    public void send(VirusMessage msg, Node dest, double proba) {        
+        if(Math.random() < proba){
         //methode permettant d'ajouter des evements à la file
-        EDSimulator.add((long)0,msg,dest,this.mypid);
+            EDSimulator.add((long)0,msg,dest,this.mypid);
+        }
     }
 
     // Partie concernant la reception du message
@@ -123,6 +135,9 @@ public void send(VirusMessage msg, Node dest,Node emit) {
     }
     private void receive(VirusMessage msg) {
         System.out.println(this + ": Received " + msg.getContent());
+        if(msg.getProbToInfect() > this.getProbToBeInfected()){
+            this.setState("Infected");
+        }
 
     }
 

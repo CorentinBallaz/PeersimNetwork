@@ -10,12 +10,14 @@ public class VirusMessage{
     private int type;
     private String content;
     private int contaminationDay;
+    private double probToInfect;
 
 
-    VirusMessage(int type, String content, int contaminationDay) {
+    VirusMessage(int type, String content, int contaminationDay, double probToInfect) {
         this.type = type;
         this.content = content;
         this.contaminationDay=contaminationDay;
+        this.probToInfect = probToInfect;
     }
 
     public String getContent() {
@@ -28,5 +30,8 @@ public class VirusMessage{
 
     public void setContaminationDate(long time){
             this.contaminationDate=time;
+    }
+    public double getProbToInfect(){
+        return this.probToInfect;
     }
 }

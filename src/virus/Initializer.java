@@ -12,7 +12,7 @@ import peersim.config.*;
 public class Initializer implements peersim.core.Control {
 
     private int virusAppPid;
-    private
+    private ControllerEvent controllerEvent;
 
     public Initializer(String prefix) {
     //recuperation du pid de la couche applicative
@@ -90,8 +90,10 @@ public class Initializer implements peersim.core.Control {
                     }
                 }
             }
-            //ajout de la proba aléatoire de contamination entre 0 et 1
-            destApp.setProbConta(Math.random());
+            //ajout de la proba aléatoire d'infecter entre 0 et 1
+            destApp.setProbToInfect(Math.random());
+            //ajout de la proba aléatoire d'etre infecté entre 0 et 1
+            destApp.setProbToBeInfected(Math.random());
 
         }
     }
@@ -110,7 +112,9 @@ public class Initializer implements peersim.core.Control {
         	
         	Random r = new Random();
         	currentNode = Network.get(node);
-        	currentNodeApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
+            currentNodeApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
+            
+            currentNodeApp.setNodeId((node));
         	
         	int minGoingOutFrequency = Configuration.getInt("minGoingOutFrequency");
         	int maxGoingOutFrequency = Configuration.getInt("maxGoingOutFrequency");
@@ -158,7 +162,7 @@ public class Initializer implements peersim.core.Control {
 //            appEmitter.send(virusMessage, dest);
 //        }
 
-        controller
+        controllerEvent.execute();
 
 
         return false;
