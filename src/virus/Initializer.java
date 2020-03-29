@@ -12,7 +12,7 @@ import peersim.config.*;
 public class Initializer implements peersim.core.Control {
 
     private int virusAppPid;
-
+    private
 
     public Initializer(String prefix) {
     //recuperation du pid de la couche applicative
@@ -138,25 +138,27 @@ public class Initializer implements peersim.core.Control {
         
         
 		//Creation message
-        virusMessage = new VirusMessage(0,"Infected");
-        if (nodeNb < 1) {
-            System.err.println("Network size is not positive");
-            System.exit(1);
-        }
-        // on recupere la couche applicative et on lui associe le numéro de son noeud
-        appEmitter = (VirusApp)Network.get(0).getProtocol(this.virusAppPid);
-        appEmitter.setNodeId(0);
+//        virusMessage = new VirusMessage(0,"Infected");
+//        if (nodeNb < 1) {
+//            System.err.println("Network size is not positive");
+//            System.exit(1);
+//        }
+//        // on recupere la couche applicative et on lui associe le numéro de son noeud
+//        appEmitter = (VirusApp)Network.get(0).getProtocol(this.virusAppPid);
+//        appEmitter.setNodeId(0);
+//
+//        // pour tous les autres noeuds du graph
+//        for (int i = 0; i < nodeNb; i++) {
+//            dest = Network.get(i);
+//            // on recupere la couche applicative et on lui associe le numéro de son noeud
+//            destApp = (VirusApp)dest.getProtocol(this.virusAppPid);
+//            destApp.setNodeId(i);
+//            System.out.println(destApp.toString() + " " + destApp.getListVoisins().toString() + " " + destApp.getProbConta() + " Year Old : "+ destApp.getYearOld() + " Going out Frequency : "+ destApp.getGoingOutFrequency());
+//            //on envoit via la couche applicative au destinataire
+//            appEmitter.send(virusMessage, dest);
+//        }
 
-        // pour tous les autres noeuds du graph
-        for (int i = 0; i < nodeNb; i++) {
-            dest = Network.get(i);
-            // on recupere la couche applicative et on lui associe le numéro de son noeud
-            destApp = (VirusApp)dest.getProtocol(this.virusAppPid);
-            destApp.setNodeId(i);
-            System.out.println(destApp.toString() + " " + destApp.getListVoisins().toString() + " " + destApp.getProbConta() + " Year Old : "+ destApp.getYearOld() + " Going out Frequency : "+ destApp.getGoingOutFrequency());
-            //on envoit via la couche applicative au destinataire
-            appEmitter.send(virusMessage, dest);
-        }
+        controller
 
 
         return false;

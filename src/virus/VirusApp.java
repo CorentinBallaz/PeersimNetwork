@@ -17,7 +17,7 @@ public class VirusApp implements EDProtocol {
     // prefixe de la couche (nom de la variable de protocole du fichier de config)
     private String prefix;
 
-    // ajout de la probabilitÃ© de contaminer quelqu'un
+    // ajout de la probabilite de contaminer quelqu'un
     private double probConta;
     
     // ajout de la frequence de sortie (en jour)
@@ -26,10 +26,10 @@ public class VirusApp implements EDProtocol {
     // ajout de l'age d'une personne
     private int yearOld;
     
-    // ajout de l'état d'une personne
+    // ajout de l'etat d'une personne
     private String state;
     
-    // ajout de si la personne est vaccinée
+    // ajout de si la personne est vaccinee
     private boolean isVaccined;
 
     // ajout de la liste de voisins pour de petits noeuds
@@ -112,7 +112,7 @@ public class VirusApp implements EDProtocol {
 
     //Partie concernat l'envoi de message
     //envoi d'un message (l'envoi se fait via la couche applicative directement)
-public void send(VirusMessage msg, Node dest) {
+public void send(VirusMessage msg, Node dest,Node emit) {
         //methode permettant d'ajouter des evements Ã  la file
         EDSimulator.add((long)0,msg,dest,this.mypid);
     }
