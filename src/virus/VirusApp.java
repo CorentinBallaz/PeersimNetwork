@@ -63,7 +63,7 @@ public class VirusApp implements EDProtocol {
     }
     
     public int getGoingOutFrequency() {
-    	return goingOutFrequency;
+    	return this.goingOutFrequency;
     }
     
     public void setYearOld(int yearOld) {
@@ -71,7 +71,7 @@ public class VirusApp implements EDProtocol {
     }
     
     public int getYearOld() {
-    	return yearOld;
+    	return this.yearOld;
     }
     
 
@@ -80,7 +80,7 @@ public class VirusApp implements EDProtocol {
     }
     
     public String getState() {
-    	return state;
+    	return this.state;
     }
     
     public void setIsVaccined(boolean isVaccined) {
@@ -88,11 +88,11 @@ public class VirusApp implements EDProtocol {
     }
     
     public boolean getIsVaccined() {
-    	return isVaccined;
+    	return this.isVaccined;
     }
     
     public ArrayList<Integer> getListVoisins() {
-        return listVoisins;
+        return this.listVoisins;
     }
 
     public void setListVoisins(ArrayList<Integer> listVoisins) {
@@ -134,7 +134,7 @@ public class VirusApp implements EDProtocol {
         this.receive((VirusMessage)event);
     }
     private void receive(VirusMessage msg) {
-        System.out.println(this + ": Received " + msg.getContent());
+        //System.out.println(this + ": Received " + msg.getContent());
         if(msg.getProbToInfect() > this.getProbToBeInfected()){
             this.setState("Infected");
         }

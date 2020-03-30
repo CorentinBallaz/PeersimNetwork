@@ -137,16 +137,8 @@ public class Initializer implements peersim.core.Control {
         }
         
         this.ajoutVoisins();
-        
-        
-        
-		//Creation message
-        virusMessage = new VirusMessage(0,"Infected");
-        if (nodeNb < 1) {
-            System.err.println("Network size is not positive");
-            System.exit(1);
-        }
-        // on met le status infecté au n premier noeud demandé (nbNodeInfected dans config)
+
+        //We infected the n first node request in config_file
         for (int infectedNode=0;infectedNode<Configuration.getInt("nbNodeInfected");infectedNode++){
             VirusApp appInfected = (VirusApp)Network.get(infectedNode).getProtocol(this.virusAppPid);
             appInfected.setState("Infected");

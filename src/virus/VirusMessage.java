@@ -13,10 +13,10 @@ public class VirusMessage{
     private double probToInfect;
 
 
-    VirusMessage(int type, String content, int contaminationDay, double probToInfect) {
+    VirusMessage(int type, String content,double probToInfect) {
         this.type = type;
         this.content = content;
-        this.contaminationDay=contaminationDay;
+        //this.contaminationDay=contaminationDay;
         this.probToInfect = probToInfect;
     }
 
