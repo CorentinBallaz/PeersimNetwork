@@ -16,8 +16,11 @@ public class VirusApp implements EDProtocol {
     // prefixe de la couche (nom de la variable de protocole du fichier de config)
     private String prefix;
 
-    // ajout de la probabilité de contaminer quelqu'un
-    private double probConta;
+    // ajout de la probabilité de d'infecté quelqu'un
+    private double probToInfect;
+
+    // ajout de la probabilité d'être infecté
+    private double probToBeInfected;
     
     // ajout de la frequence de sortie (en jour)
     private int goingOutFrequency;
@@ -39,12 +42,20 @@ public class VirusApp implements EDProtocol {
         this.mypid = Configuration.getPid(prefix + ".myself");
     }
 
-    public double getProbConta() {
-        return probConta;
+    public double getProbToInfect() {
+        return this.probToInfect;
     }
 
-    public void setProbConta(double probConta) {
-        this.probConta = probConta;
+    public void setProbToInfect(double probToInfect) {
+        this.probToInfect = probToInfect;
+    }
+
+    public double getProbToBeInfected() {
+        return this.probToBeInfected;
+    }
+
+    public void setProbToBeInfected(double probToBeInfected) {
+        this.probToBeInfected = probToBeInfected;
     }
     
     public void setGoingOutFrequency(int frequency) {
@@ -111,15 +122,11 @@ public class VirusApp implements EDProtocol {
 
     //Partie concernant l'envoi de message
     //envoi d'un message (l'envoi se fait via la couche applicative directement)
-    public boolean send(VirusMessage msg, Node dest, double proba) { 
-        //retourne un booléen qui dit si le noeud est infecté ou non
-        boolean res = false;       
+    public void send(VirusMessage msg, Node dest, double proba) {        
         if(Math.random() < proba){
         //methode permettant d'ajouter des evements à la file
             EDSimulator.add((long)0,msg,dest,this.mypid);
-            res = true;
         }
-        return res;
     }
 
     // Partie concernant la reception du message
@@ -128,6 +135,9 @@ public class VirusApp implements EDProtocol {
     }
     private void receive(VirusMessage msg) {
         System.out.println(this + ": Received " + msg.getContent());
+        if(msg.getProbToInfect() > this.getProbToBeInfected()){
+            this.setState("Infected");
+        }
 
     }
 

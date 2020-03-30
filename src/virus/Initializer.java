@@ -11,7 +11,7 @@ import peersim.config.*;
 public class Initializer implements peersim.core.Control {
 
     private int virusAppPid;
-
+    //private ControllerEvent controllerEvent;
 
     public Initializer(String prefix) {
     //recuperation du pid de la couche applicative
@@ -89,8 +89,10 @@ public class Initializer implements peersim.core.Control {
                     }
                 }
             }
-            //ajout de la proba aléatoire de contamination entre 0 et 1
-            destApp.setProbConta(Math.random());
+            //ajout de la proba aléatoire d'infecter entre 0 et 1
+            destApp.setProbToInfect(Math.random());
+            //ajout de la proba aléatoire d'etre infecté entre 0 et 1
+            destApp.setProbToBeInfected(Math.random());
 
         }
     }
@@ -149,29 +151,6 @@ public class Initializer implements peersim.core.Control {
             VirusApp appInfected = (VirusApp)Network.get(infectedNode).getProtocol(this.virusAppPid);
             appInfected.setState("Infected");
         }
-
-        // pour tous les autres noeuds du graph
-        for (int i = 0; i < nodeNb; i++) {
-            VirusApp appEmitter2 = (VirusApp)Network.get(i).getProtocol(this.virusAppPid);
-            //on check si l'émetteur est infecté
-            if(appEmitter2.getState()=="Infected"){
-                double prob = appEmitter2.getProbConta();
-                //s'il est infecté, on parcourt la liste de ses voisins
-                for(int j = 0; j < appEmitter2.getListVoisins().size();j++){
-                    int currentNodeID = appEmitter2.getListVoisins().get(j);
-                    dest = Network.get(currentNodeID);
-                    destApp = (VirusApp)dest.getProtocol(this.virusAppPid);
-                    //on envoit via la couche applicative au destinataire
-                    //on regarde la réponse de la fonction send afin de changer l'etat du noeud infecté
-                    if(appEmitter2.send(virusMessage, dest, prob)){
-                        destApp.setState("Infected");
-                    }
-                }                    
-            }
-            System.out.println(appEmitter2.toString() + " " + appEmitter2.getProbConta() + " " + appEmitter2.getState());
-            //System.out.println(destApp.toString() + " " + destApp.getListVoisins().toString() + " " + destApp.getProbConta() + " Year Old : "+ destApp.getYearOld() + " Going out Frequency : "+ destApp.getGoingOutFrequency());
-        }
-
         return false;
     }
 }
