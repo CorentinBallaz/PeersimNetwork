@@ -12,7 +12,7 @@ import peersim.config.*;
 public class Initializer implements peersim.core.Control {
 
     private int virusAppPid;
-    private ControllerEvent controllerEvent;
+    //private ControllerEvent controllerEvent;
 
     public Initializer(String prefix) {
     //recuperation du pid de la couche applicative
@@ -162,7 +162,7 @@ public class Initializer implements peersim.core.Control {
 //            appEmitter.send(virusMessage, dest);
 //        }
 
-        controllerEvent.execute();
+        //controllerEvent.execute();
 
 
         return false;

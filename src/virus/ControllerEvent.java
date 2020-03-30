@@ -24,6 +24,7 @@ public class ControllerEvent implements peersim.core.Control{
         }
 
         public boolean execute(){
+                System.out.println("Pass in controller");
                 int nbNode = Network.size();
                 VirusApp appEmitter,appDest;
                 Node emitter,dest;
