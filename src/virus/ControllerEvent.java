@@ -11,20 +11,22 @@ public class ControllerEvent implements peersim.core.Control{
 
         private int virusAppPid;
         private int nbEvent;
+        private int endTimeSimulation;
 
 
         public ControllerEvent(String prefix) {
                 //recuperation du pid de la couche applicative
                 this.virusAppPid = Configuration.getPid(prefix+ ".virusAppProtocolPid");
+                this.endTimeSimulation = Configuration.getInt("simulation.endtime");
                 this.nbEvent = 0;
         }
 
         public boolean execute(){
-                this.nbEvent = this.nbEvent + 1;
-                System.out.println("Tout n° : " + this.nbEvent);
                 int nbNode = Network.size();
                 VirusApp appEmitter,appDest;
                 Node emitter,dest;
+                int nbInfected = 0;
+                int nbClean = 0;
 
                 // look for each node
                 for (int i=0; i<nbNode;i++){
@@ -32,7 +34,6 @@ public class ControllerEvent implements peersim.core.Control{
                         appEmitter = (VirusApp)emitter.getProtocol(this.virusAppPid);
                         //a mettre dans l'initalizer
                         appEmitter.setNodeId(i);
-                        System.out.println(appEmitter.getGoingOutFrequency());
                         //if is infected, he can transmit the virus
                         if((appEmitter.getState().equals("Infected")) && (this.nbEvent%appEmitter.getGoingOutFrequency()==0)){
                                 double probToInfect = appEmitter.getProbToInfect();
@@ -47,11 +48,19 @@ public class ControllerEvent implements peersim.core.Control{
                                         appEmitter.send(msg,dest,probToInfect);
                                 }
                         }
-
-
-                        System.out.println(appEmitter.getState());
+                        if(this.nbEvent == this.endTimeSimulation-1){
+                                if(appEmitter.getState().equals("Infected")){
+                                        nbInfected += 1;
+                                }else{
+                                        nbClean += 1;
+                                }
+                        }
                 }
-                        
+                if(this.nbEvent == this.endTimeSimulation-1){
+                        System.out.println("Nombre d'infectés : " + nbInfected);
+                        System.out.println("Nombre de sains : " + nbClean);
+                }
+                this.nbEvent += 1;                        
                 return false;
         }
 

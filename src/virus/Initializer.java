@@ -89,11 +89,6 @@ public class Initializer implements peersim.core.Control {
                     }
                 }
             }
-            //ajout de la proba aléatoire d'infecter entre 0 et 1
-            destApp.setProbToInfect(Math.random());
-            //ajout de la proba aléatoire d'etre infecté entre 0 et 1
-            destApp.setProbToBeInfected(Math.random());
-
         }
     }
 
@@ -126,13 +121,18 @@ public class Initializer implements peersim.core.Control {
         	currentNodeApp.setYearOld(randomYear);
         	
         	currentNodeApp.setState("Clean");
-        	currentNodeApp.setIsVaccined(false);
+            currentNodeApp.setIsVaccined(false);
+            
+            //ajout de la proba aléatoire d'infecter entre 0 et 1
+            currentNodeApp.setProbToInfect(Math.random());
+            //ajout de la proba aléatoire d'etre infecté entre 0 et 1
+            currentNodeApp.setProbToBeInfected(Math.random());
         	
         	
-        	System.out.println("Year Old : "+currentNodeApp.getYearOld());
-        	System.out.println("Going out Frequency : "+currentNodeApp.getGoingOutFrequency());
-        	System.out.println("I'm vaccined : "+currentNodeApp.getIsVaccined());
-        	System.out.println("What's is my state : "+currentNodeApp.getState());
+        	// System.out.println("Year Old : "+currentNodeApp.getYearOld());
+        	// System.out.println("Going out Frequency : "+currentNodeApp.getGoingOutFrequency());
+        	// System.out.println("I'm vaccined : "+currentNodeApp.getIsVaccined());
+        	// System.out.println("What's is my state : "+currentNodeApp.getState());
 
         }
         
