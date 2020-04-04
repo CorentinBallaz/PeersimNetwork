@@ -97,7 +97,6 @@ public class Initializer implements peersim.core.Control {
         VirusApp destApp, currentNodeApp;
         Node dest, currentNode;
         VirusMessage virusMessage;
-		System.out.println("ça marche");
 		//Taille reseau
         nodeNb = Network.size();
         //ajout des voisins pour chaque noeud
@@ -143,6 +142,7 @@ public class Initializer implements peersim.core.Control {
             VirusApp appInfected = (VirusApp)Network.get(infectedNode).getProtocol(this.virusAppPid);
             appInfected.setState("Infected");
         }
+        System.out.println("init done");
         return false;
     }
 }

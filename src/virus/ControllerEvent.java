@@ -1,14 +1,14 @@
 package virus;
 import java.util.ArrayList;
 import java.util.Random;
-
+import java.util.HashMap;
 import peersim.edsim.*;
 import peersim.core.*;
 import peersim.config.*;
 
 
 public class ControllerEvent implements peersim.core.Control{
-
+        private ArrayList<HashMap> arrayData;
         private int virusAppPid;
         private int nbEvent;
         private int endTimeSimulation;
@@ -18,10 +18,13 @@ public class ControllerEvent implements peersim.core.Control{
                 //recuperation du pid de la couche applicative
                 this.virusAppPid = Configuration.getPid(prefix+ ".virusAppProtocolPid");
                 this.endTimeSimulation = Configuration.getInt("simulation.endtime");
+                this.arrayData = new ArrayList<HashMap>();
                 this.nbEvent = 0;
         }
 
         public boolean execute(){
+
+                HashMap temp = new HashMap();
                 int nbNode = Network.size();
                 VirusApp appEmitter,appDest;
                 Node emitter,dest;
@@ -48,19 +51,32 @@ public class ControllerEvent implements peersim.core.Control{
                                         appEmitter.send(msg,dest,probToInfect);
                                 }
                         }
-                        if(this.nbEvent == this.endTimeSimulation-1){
+//                        if(this.nbEvent == this.endTimeSimulation-1){
                                 if(appEmitter.getState().equals("Infected")){
                                         nbInfected += 1;
                                 }else{
                                         nbClean += 1;
-                                }
+//                                }
+
+
                         }
                 }
+                temp.put("nbEvent",nbEvent);
+                temp.put("nbClean",nbClean);
+                temp.put("nbInfected",nbInfected);
+                this.arrayData.add((HashMap)temp.clone());
+                temp.clear();
+
+
                 if(this.nbEvent == this.endTimeSimulation-1){
                         System.out.println("Nombre d'infectés : " + nbInfected);
                         System.out.println("Nombre de sains : " + nbClean);
+                        System.out.println(arrayData);
                 }
-                this.nbEvent += 1;                        
+                this.nbEvent += 1;
+
+
+
                 return false;
         }
 
