@@ -50,7 +50,7 @@ public class ControllerEvent implements peersim.core.Control{
                         int toVaccinated = (int)(numberOfPeopleTovaccinated*percentageVaccinated);
                         Random r = new Random();
                         for (int i= 0 ; i<toVaccinated; i++){
-                                int random = r.nextInt((numberOfPeopleTovaccinated - 0) + 1);
+                                int random = r.nextInt((numberOfPeopleTovaccinated - 0));
                                 dest = Network.get(random);
                                 appDest = (VirusApp)dest.getProtocol(this.virusAppPid);
 
