@@ -6,12 +6,13 @@
 	<property name="doc" location="doc" />
 
 	<!-- Packages to be included in the Javadoc generation -->
-	<property name="packages" value="peersim.*,example.*"/>
-		
+	<property name="packages" value="peersim.*,example.*,org.json."/>
+
 	<!-- Path for compilation -->
 	<path id="compile.path">
 		<pathelement location="jep-2.3.0.jar" />
 		<pathelement location="djep-1.0.0.jar" />
+		<pathelement location="json-20190722.jar" />
 	</path>
 
 	<target name="compile">

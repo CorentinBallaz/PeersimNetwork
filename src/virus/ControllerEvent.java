@@ -1,4 +1,6 @@
 package virus;
+
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.HashMap;
@@ -7,6 +9,16 @@ import peersim.edsim.*;
 import peersim.core.*;
 import peersim.config.*;
 import java.util.Random;
+import java.io.File;
+
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
 
 
 
@@ -128,6 +140,7 @@ public class ControllerEvent implements peersim.core.Control{
                 temp.put("nbInfected",nbInfected);
                 temp.put("nbRejected",nbRejected);
                 temp.put("nbDeath",nbDeath);
+
                 this.arrayData.add((HashMap)temp.clone());
                 temp.clear();
 

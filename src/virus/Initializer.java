@@ -100,7 +100,10 @@ public class Initializer implements peersim.core.Control {
 		//Taille reseau
         nodeNb = Network.size();
         //ajout des voisins pour chaque noeud
-        
+        int minGoingOutFrequency = Configuration.getInt("minGoingOutFrequency");
+        int maxGoingOutFrequency = Configuration.getInt("maxGoingOutFrequency");
+        int minYearOld = Configuration.getInt("minYearOld");
+        int maxYearOld = Configuration.getInt("maxYearOld");
         for (int node=0; node<nodeNb; node++) {
         	
         	Random r = new Random();
@@ -109,15 +112,13 @@ public class Initializer implements peersim.core.Control {
 
             currentNodeApp.setNodeId(node);
         	
-        	int minGoingOutFrequency = Configuration.getInt("minGoingOutFrequency");
-        	int maxGoingOutFrequency = Configuration.getInt("maxGoingOutFrequency");
+
 
 
         	int randomFrequency = r.nextInt(maxGoingOutFrequency - minGoingOutFrequency) + minGoingOutFrequency;
         	currentNodeApp.setGoingOutFrequency(randomFrequency);
         	
-        	int minYearOld = Configuration.getInt("minYearOld");
-        	int maxYearOld = Configuration.getInt("maxYearOld");
+
         	int randomYear = r.nextInt(maxYearOld - minYearOld) + minYearOld;
         	currentNodeApp.setYearOld(randomYear);
         	
