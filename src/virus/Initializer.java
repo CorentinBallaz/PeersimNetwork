@@ -143,6 +143,9 @@ public class Initializer implements peersim.core.Control {
             appInfected.setState("Infected");
         }
         System.out.println("init done");
+        System.out.println(4%5);
+        System.out.println(5%5);
+        System.out.println(6%5);
         return false;
     }
 }

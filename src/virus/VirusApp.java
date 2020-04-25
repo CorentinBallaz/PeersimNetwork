@@ -37,11 +37,21 @@ public class VirusApp implements EDProtocol {
     // ajout de la liste de voisins pour de petits noeuds
     private ArrayList<Integer> listVoisins;
 
+    private int dayInfected;
+    private int timeToRevocered;
+
     public VirusApp(String prefix) {
         this.prefix = prefix;
         this.mypid = Configuration.getPid(prefix + ".myself");
+        this.timeToRevocered= Configuration.getInt(prefix+".timeToRecovered");
+        this.dayInfected=0;
     }
-
+    public int getDayInfected(){
+        return this.dayInfected;
+    }
+    public int getTimeToRevocered(){
+        return this.timeToRevocered;
+    }
     public double getProbToInfect() {
         return this.probToInfect;
     }
@@ -76,7 +86,8 @@ public class VirusApp implements EDProtocol {
     
 
     public void setState(String state) {
-    	this.state = state;
+
+        this.state = state;
     }
     
     public String getState() {
@@ -154,10 +165,45 @@ public class VirusApp implements EDProtocol {
 
     }
 
+    public void setNewState(){
+
+        double temp;
+        if (state.equals("Infected")){
+            if (dayInfected< timeToRevocered){
+//                System.out.println(dayInfected);
+                if(dayInfected<= timeToRevocered/2){
+                     temp = dayInfected;
+                }else {
+                    temp = timeToRevocered-dayInfected;
+                }
+                double probToDeathWithAge = this.probToDeath(this.yearOld);
+
+
+                double randomProbToDeath =((Math.random() + probToDeathWithAge)/2.0)*((float)temp/((float)timeToRevocered/2.0));
+                System.out.println("age");
+                System.out.println(this.yearOld);
+                System.out.println(randomProbToDeath);
+                if (Math.random() < randomProbToDeath){
+                    System.out.println("death");
+                    state ="Death";
+                }
+                dayInfected++;
+            }else if  (dayInfected== timeToRevocered){
+                System.out.println("rejected");
+                state="Rejected";
+            }
+
+        }
+    }
 
     public double function1Resistance(int yearOld){
 
-        return 0.65*(Math.pow((yearOld/100),4)) + 0.35*(Math.pow((yearOld/100),2));
+        return 0.65*(Math.pow((float)yearOld/100,4)) + 0.35*(Math.pow((float)yearOld/100,2));
+    }
+
+    public double probToDeath(int yearOld){
+        double test = (Math.pow((float)yearOld/100,4)) + 0.5*(Math.pow((float)yearOld/100,2));
+        return  test;
     }
 
 
