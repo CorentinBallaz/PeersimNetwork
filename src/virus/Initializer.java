@@ -11,13 +11,11 @@ import peersim.config.*;
 public class Initializer implements peersim.core.Control {
 
     private int virusAppPid;
-    private ArrayList allNodesId;
     //private ControllerEvent controllerEvent;
 
     public Initializer(String prefix) {
     //recuperation du pid de la couche applicative
         this.virusAppPid = Configuration.getPid(prefix+ ".virusAppProtocolPid");
-        this.allNodesId = new ArrayList();
         
     }
     public void ajoutVoisins(){
@@ -94,6 +92,7 @@ public class Initializer implements peersim.core.Control {
         }
     }
 
+    
     public boolean execute() {
         int nodeNb;
         VirusApp destApp, currentNodeApp;
@@ -135,53 +134,11 @@ public class Initializer implements peersim.core.Control {
         	// System.out.println("Going out Frequency : "+currentNodeApp.getGoingOutFrequency());
         	// System.out.println("I'm vaccined : "+currentNodeApp.getIsVaccined());
         	// System.out.println("What's is my state : "+currentNodeApp.getState());
-            currentNodeApp.setListVoisins(new ArrayList());
-            allNodesId.add(node);
             
         }
         
-        int minVoisins = Configuration.getInt("node.nbVoisinsMin");
-        int maxVoisins = Configuration.getInt("node.nbVoisinsMax");
-        Random random = new Random();
-        for (int nodeId=0;nodeId<nodeNb;nodeId++) {
-        	System.out.println(nodeId);
-        	Node node = Network.get(nodeId);
-        	VirusApp nodeApp = (VirusApp)node.getProtocol(this.virusAppPid);
-        	if ((nodeApp.getListVoisins().size() < minVoisins)) {
-        		while (nodeApp.getListVoisins().size() < minVoisins) {
-        			/*System.out.println("New");
-        			System.out.println(nodeId);
-        			System.out.println(nodeApp.getListVoisins());
-        			System.out.println(allNodesId.size());*/
-        			int randomNodeId = random.nextInt(allNodesId.size());
-        			//System.out.println(randomNodeId);
-        			Node randomNode = Network.get(randomNodeId);
-        			VirusApp randomNodeApp = (VirusApp)randomNode.getProtocol(this.virusAppPid);
-        			if ((randomNodeApp.getListVoisins().size() >= maxVoisins-1)) {
-        				//System.out.println("Removing");
-        				allNodesId.remove((Object) randomNodeId); 
-        			}
-        			/*System.out.println(!(nodeApp.getListVoisins().contains(randomNodeId)));
-        			System.out.println(randomNodeApp.getListVoisins().size() < maxVoisins);
-        			System.out.println(!(nodeId == randomNodeId));
-        			System.out.println((!(nodeApp.getListVoisins().contains(randomNodeId))) && (randomNodeApp.getListVoisins().size() < maxVoisins) && (!(nodeId == randomNodeId)));*/
-        			if ((!(nodeApp.getListVoisins().contains(randomNodeId))) && (randomNodeApp.getListVoisins().size() < maxVoisins) && (!(nodeId == randomNodeId))) {
-        				nodeApp.addVoisins(randomNodeId);
-        				randomNodeApp.addVoisins(nodeId);
-        				//System.out.println("I Added");
-        			}
-        		}
-        	}
-        }
         
-        
-        for (int nodeId=0;nodeId<nodeNb;nodeId++) {
-        	Node node = Network.get(nodeId);
-        	VirusApp nodeApp = (VirusApp)node.getProtocol(this.virusAppPid);
-        	System.out.println(nodeApp.getListVoisins());
-        }
-        
-        System.out.println("Neighborhood done");
+        this.ajoutVoisins();
       
 
         //We infected the n first node request in config_file
