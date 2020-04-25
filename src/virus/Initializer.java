@@ -111,6 +111,8 @@ public class Initializer implements peersim.core.Control {
         	
         	int minGoingOutFrequency = Configuration.getInt("minGoingOutFrequency");
         	int maxGoingOutFrequency = Configuration.getInt("maxGoingOutFrequency");
+
+
         	int randomFrequency = r.nextInt(maxGoingOutFrequency - minGoingOutFrequency) + minGoingOutFrequency;
         	currentNodeApp.setGoingOutFrequency(randomFrequency);
         	
@@ -119,15 +121,13 @@ public class Initializer implements peersim.core.Control {
         	int randomYear = r.nextInt(maxYearOld - minYearOld) + minYearOld;
         	currentNodeApp.setYearOld(randomYear);
         	
-        	currentNodeApp.setState("Clean");
+        	currentNodeApp.setState("Sensible");
             currentNodeApp.setIsVaccined(false);
             
             //ajout de la proba aléatoire d'infecter entre 0 et 1
             currentNodeApp.setProbToInfect(Math.random());
-            //ajout de la proba aléatoire d'etre infecté entre 0 et 1
-            currentNodeApp.setProbToBeInfected(Math.random());
-        	
-        	
+            //ajout de la proba aléatoire d'etre infecté entre 0 et 1, (moyenne ponderee d'un random et d'une fonction qui regit les defense imunitaires suivant l'age
+            currentNodeApp.setProbToBeInfected((Math.random()+2*currentNodeApp.function1Resistance(currentNodeApp.getYearOld()))/3);
         	// System.out.println("Year Old : "+currentNodeApp.getYearOld());
         	// System.out.println("Going out Frequency : "+currentNodeApp.getGoingOutFrequency());
         	// System.out.println("I'm vaccined : "+currentNodeApp.getIsVaccined());

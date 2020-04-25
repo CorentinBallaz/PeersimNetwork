@@ -1,5 +1,5 @@
 package virus;
-
+import java.lang.Math;
 import java.util.ArrayList;
 import peersim.edsim.*;
 import peersim.core.*;
@@ -135,10 +135,29 @@ public class VirusApp implements EDProtocol {
     }
     private void receive(VirusMessage msg) {
         //System.out.println(this + ": Received " + msg.getContent());
-        if(msg.getProbToInfect() > this.getProbToBeInfected()){
-            this.setState("Infected");
+        if (this.isVaccined){
+            this.probToBeInfected = this.probToInfect*0.75;
+            if(msg.getProbToInfect() > this.getProbToBeInfected()){
+                this.setState("Infected");
+            }
+        }else {
+//            int probaToBeInfected = this.function1Resistance(this.yearOld) + ;
+            if(msg.getProbToInfect() > this.getProbToBeInfected()){
+                this.setState("Infected");
+            }
+
+
         }
 
+
+
+
+    }
+
+
+    public double function1Resistance(int yearOld){
+
+        return 0.65*(Math.pow((yearOld/100),4)) + 0.35*(Math.pow((yearOld/100),2));
     }
 
 

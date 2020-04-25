@@ -23,7 +23,8 @@ public class ControllerEvent implements peersim.core.Control{
         }
 
         public boolean execute(){
-
+                System.out.println(CommonState.getTime() );
+                System.out.println(nbEvent );
                 HashMap temp = new HashMap();
                 int nbNode = Network.size();
                 VirusApp appEmitter,appDest;
@@ -38,6 +39,7 @@ public class ControllerEvent implements peersim.core.Control{
                         //a mettre dans l'initalizer
                         appEmitter.setNodeId(i);
                         //if is infected, he can transmit the virus
+
                         if((appEmitter.getState().equals("Infected")) && (this.nbEvent%appEmitter.getGoingOutFrequency()==0)){
                                 double probToInfect = appEmitter.getProbToInfect();
                                 for (int j=0; j<appEmitter.getListVoisins().size();j++){
