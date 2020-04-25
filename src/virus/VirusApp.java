@@ -1,7 +1,6 @@
 package virus;
-
+import java.lang.Math;
 import java.util.ArrayList;
-import java.util.Random;
 import peersim.edsim.*;
 import peersim.core.*;
 import peersim.config.*;
@@ -17,8 +16,11 @@ public class VirusApp implements EDProtocol {
     // prefixe de la couche (nom de la variable de protocole du fichier de config)
     private String prefix;
 
-    // ajout de la probabilité de contaminer quelqu'un
-    private double probConta;
+    // ajout de la probabilité de d'infecté quelqu'un
+    private double probToInfect;
+
+    // ajout de la probabilité d'être infecté
+    private double probToBeInfected;
     
     // ajout de la frequence de sortie (en jour)
     private int goingOutFrequency;
@@ -26,10 +28,10 @@ public class VirusApp implements EDProtocol {
     // ajout de l'age d'une personne
     private int yearOld;
     
-    // ajout de l'�tat d'une personne
+    // ajout de l'�tat d'une personne
     private String state;
     
-    // ajout de si la personne est vaccin�e
+    // ajout de si la personne est vaccin�e
     private boolean isVaccined;
 
     // ajout de la liste de voisins pour de petits noeuds
@@ -40,12 +42,20 @@ public class VirusApp implements EDProtocol {
         this.mypid = Configuration.getPid(prefix + ".myself");
     }
 
-    public double getProbConta() {
-        return probConta;
+    public double getProbToInfect() {
+        return this.probToInfect;
     }
 
-    public void setProbConta(double probConta) {
-        this.probConta = probConta;
+    public void setProbToInfect(double probToInfect) {
+        this.probToInfect = probToInfect;
+    }
+
+    public double getProbToBeInfected() {
+        return this.probToBeInfected;
+    }
+
+    public void setProbToBeInfected(double probToBeInfected) {
+        this.probToBeInfected = probToBeInfected;
     }
     
     public void setGoingOutFrequency(int frequency) {
@@ -53,7 +63,7 @@ public class VirusApp implements EDProtocol {
     }
     
     public int getGoingOutFrequency() {
-    	return goingOutFrequency;
+    	return this.goingOutFrequency;
     }
     
     public void setYearOld(int yearOld) {
@@ -61,7 +71,7 @@ public class VirusApp implements EDProtocol {
     }
     
     public int getYearOld() {
-    	return yearOld;
+    	return this.yearOld;
     }
     
 
@@ -70,7 +80,7 @@ public class VirusApp implements EDProtocol {
     }
     
     public String getState() {
-    	return state;
+    	return this.state;
     }
     
     public void setIsVaccined(boolean isVaccined) {
@@ -78,11 +88,11 @@ public class VirusApp implements EDProtocol {
     }
     
     public boolean getIsVaccined() {
-    	return isVaccined;
+    	return this.isVaccined;
     }
     
     public ArrayList<Integer> getListVoisins() {
-        return listVoisins;
+        return this.listVoisins;
     }
 
     public void setListVoisins(ArrayList<Integer> listVoisins) {
@@ -110,11 +120,13 @@ public class VirusApp implements EDProtocol {
         return "Node "+ this.nodeId;
     }
 
-    //Partie concernat l'envoi de message
+    //Partie concernant l'envoi de message
     //envoi d'un message (l'envoi se fait via la couche applicative directement)
-public void send(VirusMessage msg, Node dest) {
+    public void send(VirusMessage msg, Node dest, double proba) {        
+        if(Math.random() < proba){
         //methode permettant d'ajouter des evements à la file
-        EDSimulator.add((long)0,msg,dest,this.mypid);
+            EDSimulator.add((long)0,msg,dest,this.mypid);
+        }
     }
 
     // Partie concernant la reception du message
@@ -122,8 +134,30 @@ public void send(VirusMessage msg, Node dest) {
         this.receive((VirusMessage)event);
     }
     private void receive(VirusMessage msg) {
-        System.out.println(this + ": Received " + msg.getContent());
+        //System.out.println(this + ": Received " + msg.getContent());
+        if (this.isVaccined){
+            this.probToBeInfected = this.probToInfect*0.75;
+            if(msg.getProbToInfect() > this.getProbToBeInfected()){
+                this.setState("Infected");
+            }
+        }else {
+//            int probaToBeInfected = this.function1Resistance(this.yearOld) + ;
+            if(msg.getProbToInfect() > this.getProbToBeInfected()){
+                this.setState("Infected");
+            }
 
+
+        }
+
+
+
+
+    }
+
+
+    public double function1Resistance(int yearOld){
+
+        return 0.65*(Math.pow((yearOld/100),4)) + 0.35*(Math.pow((yearOld/100),2));
     }
 
 

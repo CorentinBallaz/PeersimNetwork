@@ -2,7 +2,6 @@ package virus;
 import java.util.ArrayList;
 import java.util.Random;
 
-import peersim.edsim.*;
 import peersim.core.*;
 import peersim.config.*;
 
@@ -12,7 +11,7 @@ import peersim.config.*;
 public class Initializer implements peersim.core.Control {
 
     private int virusAppPid;
-
+    //private ControllerEvent controllerEvent;
 
     public Initializer(String prefix) {
     //recuperation du pid de la couche applicative
@@ -90,18 +89,14 @@ public class Initializer implements peersim.core.Control {
                     }
                 }
             }
-            //ajout de la proba aléatoire de contamination entre 0 et 1
-            destApp.setProbConta(Math.random());
-
         }
     }
 
     public boolean execute() {
         int nodeNb;
-        VirusApp appEmitter, destApp, currentNodeApp;
+        VirusApp destApp, currentNodeApp;
         Node dest, currentNode;
         VirusMessage virusMessage;
-		System.out.println("ça marche");
 		//Taille reseau
         nodeNb = Network.size();
         //ajout des voisins pour chaque noeud
@@ -110,10 +105,14 @@ public class Initializer implements peersim.core.Control {
         	
         	Random r = new Random();
         	currentNode = Network.get(node);
-        	currentNodeApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
+            currentNodeApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
+
+            currentNodeApp.setNodeId(node);
         	
         	int minGoingOutFrequency = Configuration.getInt("minGoingOutFrequency");
         	int maxGoingOutFrequency = Configuration.getInt("maxGoingOutFrequency");
+
+
         	int randomFrequency = r.nextInt(maxGoingOutFrequency - minGoingOutFrequency) + minGoingOutFrequency;
         	currentNodeApp.setGoingOutFrequency(randomFrequency);
         	
@@ -122,43 +121,28 @@ public class Initializer implements peersim.core.Control {
         	int randomYear = r.nextInt(maxYearOld - minYearOld) + minYearOld;
         	currentNodeApp.setYearOld(randomYear);
         	
-        	currentNodeApp.setState("Clean");
-        	currentNodeApp.setIsVaccined(false);
-        	
-        	
-        	System.out.println("Year Old : "+currentNodeApp.getYearOld());
-        	System.out.println("Going out Frequency : "+currentNodeApp.getGoingOutFrequency());
-        	System.out.println("I'm vaccined : "+currentNodeApp.getIsVaccined());
-        	System.out.println("What's is my state : "+currentNodeApp.getState());
+        	currentNodeApp.setState("Sensible");
+            currentNodeApp.setIsVaccined(false);
+            
+            //ajout de la proba aléatoire d'infecter entre 0 et 1
+            currentNodeApp.setProbToInfect(Math.random());
+            //ajout de la proba aléatoire d'etre infecté entre 0 et 1, (moyenne ponderee d'un random et d'une fonction qui regit les defense imunitaires suivant l'age
+            currentNodeApp.setProbToBeInfected((Math.random()+2*currentNodeApp.function1Resistance(currentNodeApp.getYearOld()))/3);
+        	// System.out.println("Year Old : "+currentNodeApp.getYearOld());
+        	// System.out.println("Going out Frequency : "+currentNodeApp.getGoingOutFrequency());
+        	// System.out.println("I'm vaccined : "+currentNodeApp.getIsVaccined());
+        	// System.out.println("What's is my state : "+currentNodeApp.getState());
 
         }
         
         this.ajoutVoisins();
-        
-        
-        
-		//Creation message
-        virusMessage = new VirusMessage(0,"Infected");
-        if (nodeNb < 1) {
-            System.err.println("Network size is not positive");
-            System.exit(1);
+
+        //We infected the n first node request in config_file
+        for (int infectedNode=0;infectedNode<Configuration.getInt("nbNodeInfected");infectedNode++){
+            VirusApp appInfected = (VirusApp)Network.get(infectedNode).getProtocol(this.virusAppPid);
+            appInfected.setState("Infected");
         }
-        // on recupere la couche applicative et on lui associe le numéro de son noeud
-        appEmitter = (VirusApp)Network.get(0).getProtocol(this.virusAppPid);
-        appEmitter.setNodeId(0);
-
-        // pour tous les autres noeuds du graph
-        for (int i = 0; i < nodeNb; i++) {
-            dest = Network.get(i);
-            // on recupere la couche applicative et on lui associe le numéro de son noeud
-            destApp = (VirusApp)dest.getProtocol(this.virusAppPid);
-            destApp.setNodeId(i);
-            System.out.println(destApp.toString() + " " + destApp.getListVoisins().toString() + " " + destApp.getProbConta() + " Year Old : "+ destApp.getYearOld() + " Going out Frequency : "+ destApp.getGoingOutFrequency());
-            //on envoit via la couche applicative au destinataire
-            appEmitter.send(virusMessage, dest);
-        }
-
-
+        System.out.println("init done");
         return false;
     }
 }
