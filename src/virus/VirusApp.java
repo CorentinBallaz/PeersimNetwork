@@ -37,9 +37,13 @@ public class VirusApp implements EDProtocol {
     // ajout de la liste de voisins pour de petits noeuds
     private ArrayList<Integer> listVoisins;
 
+    private int dayInfected;
+    private int timeToRevocered;
+
     public VirusApp(String prefix) {
         this.prefix = prefix;
         this.mypid = Configuration.getPid(prefix + ".myself");
+        this.timeToRevocered= Configuration.getInt(prefix+".timeToRecovered");
     }
 
     public double getProbToInfect() {
@@ -76,7 +80,11 @@ public class VirusApp implements EDProtocol {
     
 
     public void setState(String state) {
-    	this.state = state;
+
+        if (state.equals("Infected")){
+            this.dayInfected=0;
+        }
+        this.state = state;
     }
     
     public String getState() {
@@ -154,10 +162,33 @@ public class VirusApp implements EDProtocol {
 
     }
 
+    public void setNewState(){
+
+
+        if (state.equals("Infected")){
+            if (dayInfected< timeToRevocered){
+                double probToDeathWithAge = this.probToDeath(this.yearOld);
+                double randomProbToDeath =((Math.random() + probToDeathWithAge)/2)*(dayInfected%(timeToRevocered/2)/timeToRevocered);
+                if (Math.random() < randomProbToDeath){
+                    System.out.println("death");
+                    state = "Death";
+                }
+            }else if  (dayInfected== timeToRevocered){
+                System.out.println("rejected");
+                state="Rejected";
+            }
+
+        }
+    }
 
     public double function1Resistance(int yearOld){
 
         return 0.65*(Math.pow((yearOld/100),4)) + 0.35*(Math.pow((yearOld/100),2));
+    }
+
+    public double probToDeath(int yearOld){
+
+        return  (Math.pow((yearOld/100),4)) + 0.5*(Math.pow((yearOld/100),2));
     }
 
 

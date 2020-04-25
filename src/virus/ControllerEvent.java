@@ -19,6 +19,7 @@ public class ControllerEvent implements peersim.core.Control{
         private double percentageVaccinated;
         private boolean[] vaccinated;
         private int numberOfPeopleTovaccinated;
+        private int timeToRecover;
 
         public ControllerEvent(String prefix) {
                 //recuperation du pid de la couche applicative
@@ -35,7 +36,7 @@ public class ControllerEvent implements peersim.core.Control{
 
         public boolean execute(){
 
-                System.out.println(numberOfPeopleTovaccinated);
+
                 HashMap temp = new HashMap();
                 int nbNode = Network.size();
                 VirusApp appEmitter,appDest;
@@ -52,7 +53,7 @@ public class ControllerEvent implements peersim.core.Control{
                                 int random = r.nextInt((numberOfPeopleTovaccinated - 0) + 1);
                                 dest = Network.get(random);
                                 appDest = (VirusApp)dest.getProtocol(this.virusAppPid);
-                                System.out.println("laaaa");
+
                                 if (vaccinated[random]==false && appDest.getState().equals("Sensible")) {
                                         appDest.setIsVaccined(true);
                                         vaccinated[random] = true;
@@ -73,11 +74,24 @@ public class ControllerEvent implements peersim.core.Control{
                 for (int i=0; i<nbNode;i++){
                         emitter = Network.get(i);
                         appEmitter = (VirusApp)emitter.getProtocol(this.virusAppPid);
-                        System.out.println(appEmitter.getIsVaccined());
+
 
                         //a mettre dans l'initalizer
 //                        appEmitter.setNodeId(i);
                         //if is infected, he can transmit the virus
+
+                        //Disease evolution
+                        if(appEmitter.getState().equals("Infected")){
+                                System.out.println("rentrer dans set New state");
+                                appEmitter.setNewState();
+
+
+                        }
+                        if(appEmitter.getState().equals("Death")){
+//                                System.out.println(appEmitter.getState());
+                        }
+
+                        //Infection evolution
 
                         if((appEmitter.getState().equals("Infected")) && (this.nbEvent%appEmitter.getGoingOutFrequency()==0)){
                                 double probToInfect = appEmitter.getProbToInfect();
