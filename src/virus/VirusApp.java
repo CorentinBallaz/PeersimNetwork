@@ -180,16 +180,12 @@ public class VirusApp implements EDProtocol {
 
 
                 double randomProbToDeath =((Math.random() + probToDeathWithAge)/2.0)*((float)temp/((float)timeToRevocered/2.0));
-                System.out.println("age");
-                System.out.println(this.yearOld);
-                System.out.println(randomProbToDeath);
                 if (Math.random() < randomProbToDeath){
-                    System.out.println("death");
+
                     state ="Death";
                 }
                 dayInfected++;
             }else if  (dayInfected== timeToRevocered){
-                System.out.println("rejected");
                 state="Rejected";
             }
 
