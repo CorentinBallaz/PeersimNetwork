@@ -114,14 +114,19 @@ public class ControllerEvent implements peersim.core.Control{
                         if((appEmitter.getState().equals("Infected")) && (this.nbEvent%appEmitter.getGoingOutFrequency()==0)){
                                 double probToInfect = appEmitter.getProbToInfect();
                                 for (int j=0; j<appEmitter.getListVoisins().size();j++){
+
                                         int currentNodeID = appEmitter.getListVoisins().get(j);
                                         dest = Network.get(currentNodeID);
                                         appDest = (VirusApp)dest.getProtocol(this.virusAppPid);
-                                        VirusMessage msg = new VirusMessage(0,"TryContamination",probToInfect);
+                                        if ((appDest.getState().equals("Sensible"))){
+                                                VirusMessage msg = new VirusMessage(0,"TryContamination",probToInfect);
+                                                //on envoit via la couche applicative au destinataire
+                                                //on regarde la réponse de la fonction send afin de changer l'etat du noeud infecté
+                                                appEmitter.send(msg,dest,probToInfect);
+                                        }
 
-                                        //on envoit via la couche applicative au destinataire
-                                        //on regarde la réponse de la fonction send afin de changer l'etat du noeud infecté
-                                        appEmitter.send(msg,dest,probToInfect);
+
+
                                 }
                         }
 //                        if(this.nbEvent == this.endTimeSimulation-1){
