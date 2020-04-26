@@ -40,16 +40,16 @@ public class Initializer implements peersim.core.Control {
     	int maxYearOld = Configuration.getInt("maxYearOld");
     	int minGoingOutFrequency = Configuration.getInt("minGoingOutFrequency");
     	int maxGoingOutFrequency = Configuration.getInt("maxGoingOutFrequency");
+    	Random randomForAttributes = new Random();
+    	try {
+        	int randomSeed = Configuration.getInt("random.seed.attributes");
+        	randomForAttributes.setSeed(randomSeed);
+        }
+        catch (Exception e) {
+
+        }
         for (int node=0; node<nodeNb; node++) {
         	
-        	Random randomForAttributes = new Random();
-        	try {
-            	int randomSeed = Configuration.getInt("random.seed.attributes");
-            	randomForAttributes.setSeed(randomSeed);
-            }
-            catch (Exception e) {
-
-            }
         	currentNode = Network.get(node);
             currentNodeApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
 
@@ -88,9 +88,9 @@ public class Initializer implements peersim.core.Control {
         	Node node = Network.get(nodeId);
         	VirusApp nodeApp = (VirusApp)node.getProtocol(this.virusAppPid);
         	
-        	// Si le noeud n'a pas d�j� son minimum de voisin requis
+        	// Si le noeud n'a pas deja son minimum de voisin requis
         	if ((nodeApp.getListVoisins().size() < minVoisins)) {
-        		// On r�cup�re les noeuds �ligibles auquels il peut se lier (ceux n'ayant pas atteint leur max et on retire le noeud actuel)
+        		// On recupere les noeuds eligibles auquels il peut se lier (ceux n'ayant pas atteint leur max et on retire le noeud actuel)
         		List eligibleNodes = new ArrayList(allEligibleNodeIds);
         		eligibleNodes.remove((Object) nodeId);
         		
