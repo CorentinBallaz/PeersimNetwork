@@ -19,7 +19,7 @@
 package peersim;
 
 import java.io.*;
-
+import java.util.Scanner;
 import peersim.cdsim.*;
 import peersim.config.*;
 import peersim.core.*;
@@ -166,7 +166,14 @@ public static void main(String[] args)
 		    "Simulator: unable to determine simulation engine type");
 		return;
 	}
-	
+	File thefile=new File("resultat_temp.json");
+	try {
+		FileWriter fr = new FileWriter(thefile, true);
+		fr.write("[");
+		fr.close();
+	}catch (IOException e) {
+		e.printStackTrace();
+	}
 	try {
 
 		for(int k=0; k<exps; ++k)
@@ -176,6 +183,16 @@ public static void main(String[] args)
 				long seed = CommonState.r.nextLong();
 				CommonState.initializeRandom(seed);
 			}
+			try {
+				FileWriter fr = new FileWriter(thefile, true);
+				fr.write("{\"experience\":" +k + ",\"data\":");
+				fr.close();
+			}catch (IOException e) {
+				e.printStackTrace();
+			}
+
+
+
 			System.err.print("Simulator: starting experiment "+k);
 			System.err.println(" invoking "+simName[SIMID]);
 			System.err.println("Random seed: "+
@@ -201,6 +218,17 @@ public static void main(String[] args)
 	} catch (IllegalParameterException e) {
 		System.err.println(e+"");
 		System.exit(1);
+	}
+
+	try {
+		String content = new Scanner(thefile).useDelimiter("\\Z").next();
+
+		String withoutLastCharacter = content.substring(0, content.length() - 1);
+		FileWriter fr = new FileWriter(new File("results.json"), true);
+		fr.write(withoutLastCharacter+"]");
+		fr.close();
+	}catch (IOException e) {
+		e.printStackTrace();
 	}
 
 	// undocumented testing capabilities

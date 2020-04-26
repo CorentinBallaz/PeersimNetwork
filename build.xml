@@ -4,15 +4,16 @@
 	<property name="src" location="src" />
 	<property name="build" location="classes" />
 	<property name="doc" location="doc" />
+	<property name="lib.dir"     location="lib"/>
 
 	<!-- Packages to be included in the Javadoc generation -->
-	<property name="packages" value="peersim.*,example.*,org.json."/>
+	<property name="packages" value="peersim.*,example.*"/>
 
 	<!-- Path for compilation -->
 	<path id="compile.path">
 		<pathelement location="jep-2.3.0.jar" />
 		<pathelement location="djep-1.0.0.jar" />
-		<pathelement location="json-20190722.jar" />
+		<fileset dir="${lib.dir}" includes="**/*.jar"/>
 	</path>
 
 	<target name="compile">

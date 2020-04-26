@@ -10,8 +10,8 @@ import peersim.core.*;
 import peersim.config.*;
 import java.util.Random;
 import java.io.File;
-
-
+//import java.io.String;
+import java.io.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +32,8 @@ public class ControllerEvent implements peersim.core.Control{
         private boolean[] vaccinated;
         private int numberOfPeopleTovaccinated;
         private int timeToRecover;
+//        private String fileName;
+        private File thefile;
 
         public ControllerEvent(String prefix) {
                 //recuperation du pid de la couche applicative
@@ -44,6 +46,8 @@ public class ControllerEvent implements peersim.core.Control{
                 this.vaccinated = new boolean[Network.size()];
                 Arrays.fill(vaccinated,false);
                 this.numberOfPeopleTovaccinated = Network.size();
+                this.thefile=new File("resultat_temp.json");
+
         }
 
         public boolean execute(){
@@ -141,14 +145,46 @@ public class ControllerEvent implements peersim.core.Control{
                 temp.put("nbRejected",nbRejected);
                 temp.put("nbDeath",nbDeath);
 
+//                try {
+//                        BufferedWriter out = new BufferedWriter(
+//                                new FileWriter(fileName));
+//                        out.write(json.toString());
+//                        out.close();
+//                }
+//                catch (IOException e) {
+//                        System.out.println("Exception Occurred" + e);
+//                }
+
+
+//                System.out.println(json);
                 this.arrayData.add((HashMap)temp.clone());
                 temp.clear();
 
 
                 if(this.nbEvent == this.endTimeSimulation-1){
-                        System.out.println("Nombre d'infectés : " + nbInfected);
-                        System.out.println("Nombre de sains : " + nbClean);
-                        System.out.println(arrayData);
+//                        System.out.println("Nombre d'infectés : " + nbInfected);
+//                        System.out.println("Nombre de sains : " + nbClean);
+//                        int exps = Configuration.getInt("simulation.experiments",1);
+//                        System.out.println("experience " + exps);
+//                        System.out.println(arrayData);
+                        try {
+                                FileWriter fr = new FileWriter(this.thefile, true);
+                                fr.write("[");
+                                HashMap last = arrayData.get(arrayData.size()-1);
+                                arrayData.remove(arrayData.size()-1);
+                                for(HashMap map : arrayData){
+                                        JSONObject json = new JSONObject(map);
+                                        fr.write(json.toString()+",");
+                                }
+                                JSONObject json = new JSONObject(last);
+                                fr.write(json+"]},");
+                                fr.close();
+
+
+                        }catch (IOException e) {
+                                e.printStackTrace();
+                        }
+
                 }
                 this.nbEvent += 1;
 
