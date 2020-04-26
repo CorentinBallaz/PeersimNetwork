@@ -1,5 +1,7 @@
 package virus;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import peersim.core.*;
@@ -12,86 +14,20 @@ public class Initializer implements peersim.core.Control {
 
     private int virusAppPid;
     //private ControllerEvent controllerEvent;
+    private ArrayList allEligibleNodeIds;
+    private List allNodes;
 
     public Initializer(String prefix) {
     //recuperation du pid de la couche applicative
         this.virusAppPid = Configuration.getPid(prefix+ ".virusAppProtocolPid");
+        // Tous les noeuds n'ayant pas atteint leur nb de voisin max
+        this.allEligibleNodeIds = new ArrayList();
+        // Tous les noeuds
+        this.allNodes = new ArrayList();
         
     }
-    public void ajoutVoisins(){
-        ///mÃ©thode qui crÃ©Ã© pour chaque noeud une liste de voisins qui sont directement reliÃ©s Ã  lui;
-        ///associe une arrayList d'entier(s)
-        int minVoisins = Configuration.getInt("node.nbVoisinsMin");
-        int maxVoisins = Configuration.getInt("node.nbVoisinsMax");
-        int range = maxVoisins - minVoisins + 2;
-        int rangeNetwork = Network.size();
-        for(int i=0;i<rangeNetwork;i++){
-            Node myNode = Network.get(i);
-            // on recupere la couche applicative et on lui associe le numÃ©ro de son noeud
-            VirusApp destApp = (VirusApp)myNode.getProtocol(this.virusAppPid);
-            //On check dans les autres noeuds s'il n'y a pas le noeud actuel
-            //si oui, on l'ajoute dans notre liste de voisins
-            for(int k=0;k<rangeNetwork;k++){
-                if(k!=i){
-                    Node currentNode = Network.get(k);
-                    VirusApp currentDestApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
-                    try{
-                        for(int l=0;l<currentDestApp.getListVoisins().size();l++){
-                            int numVoisin = currentDestApp.getListVoisins().get(l);
-                            boolean isIn = destApp.getListVoisins().contains(numVoisin);
-                            if(currentDestApp.getListVoisins().get(l).equals(i) && numVoisin!=i && isIn==false){
-                                destApp.addVoisins(numVoisin);
-                            }
-                        }
-                    }catch(Exception e){}
-                }
-            }
-            //on regarde les voisins que l'on a deja, au cas oÃ¹ on m'aurait ajouter avant Ã  partir d'un autre noeud
-            int voisinAct;
-            try{
-                voisinAct = destApp.getListVoisins().size();
-            }catch(Exception e){
-                voisinAct = 0;
-            }
-            //si je suis deja dans la liste de nbMaxvoisins de noeuds, alors je n'en rajoute pas
-            //sinon variable alÃ©atoire entre min et max pour cb de voisins je prend au hasard
-            int randVoisins = (int)(Math.random() * range) + minVoisins - voisinAct;
-            if(randVoisins<0){
-                randVoisins=0;
-            }
-            //je prend des nombres au hasard qui seront mes voisins
-            int[] ints = new Random().ints(0,rangeNetwork).distinct().limit(randVoisins).toArray();
-            for(int j=0;j<ints.length;j++){
-                int monNb = ints[j];
-                boolean isIn2 = false;
-                //je check si le nb n'est pas deja dans ma liste de voisins
-                try{
-                    isIn2 = destApp.getListVoisins().contains(monNb);
-                }catch(Exception e){}
-                if(ints[j]!=i && isIn2==false){
-                    Node verifNode = Network.get(monNb);
-                    VirusApp verifDestApp = (VirusApp)verifNode.getProtocol(this.virusAppPid);
-                    //Ajout de mon noeud dans le noeud voisin que j'ai tirÃ© alÃ©atoirement
-                    try{
-                        verifDestApp.addVoisins(i);
-                    }catch(Exception e){
-                        ArrayList<Integer> listVoisins2 = new ArrayList<Integer>();
-                        listVoisins2.add(i);
-                        verifDestApp.setListVoisins(listVoisins2);
-                    }
-                    //j'ajoute le nb tirÃ© dans ma liste de noeuds voisins
-                    try{
-                        destApp.addVoisins(monNb);
-                    }catch(Exception e){
-                        ArrayList<Integer> listVoisins3 = new ArrayList<Integer>();
-                        listVoisins3.add(monNb);
-                        destApp.setListVoisins(listVoisins3);
-                    }
-                }
-            }
-        }
-    }
 
+    
     public boolean execute() {
         int nodeNb;
         VirusApp destApp, currentNodeApp;
@@ -100,10 +36,10 @@ public class Initializer implements peersim.core.Control {
 		//Taille reseau
         nodeNb = Network.size();
         //ajout des voisins pour chaque noeud
-        int minGoingOutFrequency = Configuration.getInt("minGoingOutFrequency");
-        int maxGoingOutFrequency = Configuration.getInt("maxGoingOutFrequency");
         int minYearOld = Configuration.getInt("minYearOld");
-        int maxYearOld = Configuration.getInt("maxYearOld");
+    	int maxYearOld = Configuration.getInt("maxYearOld");
+    	int minGoingOutFrequency = Configuration.getInt("minGoingOutFrequency");
+    	int maxGoingOutFrequency = Configuration.getInt("maxGoingOutFrequency");
         for (int node=0; node<nodeNb; node++) {
         	
         	Random r = new Random();
@@ -111,33 +47,102 @@ public class Initializer implements peersim.core.Control {
             currentNodeApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
 
             currentNodeApp.setNodeId(node);
-        	
-
-
 
         	int randomFrequency = r.nextInt(maxGoingOutFrequency - minGoingOutFrequency) + minGoingOutFrequency;
         	currentNodeApp.setGoingOutFrequency(randomFrequency);
         	
-
         	int randomYear = r.nextInt(maxYearOld - minYearOld) + minYearOld;
         	currentNodeApp.setYearOld(randomYear);
         	
         	currentNodeApp.setState("Sensible");
             currentNodeApp.setIsVaccined(false);
-            
-            //ajout de la proba alÃ©atoire d'infecter entre 0 et 1
             currentNodeApp.setProbToInfect(Math.random());
-            //ajout de la proba alÃ©atoire d'etre infectÃ© entre 0 et 1, (moyenne ponderee d'un random et d'une fonction qui regit les defense imunitaires suivant l'age
             currentNodeApp.setProbToBeInfected((Math.random()+2*currentNodeApp.function1Resistance(currentNodeApp.getYearOld()))/3);
-        	// System.out.println("Year Old : "+currentNodeApp.getYearOld());
-        	// System.out.println("Going out Frequency : "+currentNodeApp.getGoingOutFrequency());
-        	// System.out.println("I'm vaccined : "+currentNodeApp.getIsVaccined());
-        	// System.out.println("What's is my state : "+currentNodeApp.getState());
 
+            currentNodeApp.setListVoisins(new ArrayList());
+            allEligibleNodeIds.add(node);
+            allNodes.add(node);
+            
         }
         
-        this.ajoutVoisins();
-
+        // NEIGHBORHOOD
+        int minVoisins = Configuration.getInt("node.nbVoisinsMin");
+        int maxVoisins = Configuration.getInt("node.nbVoisinsMax");
+        int randomSeed = Configuration.getInt("random.seed");
+        Random random = new Random();
+        random.setSeed(randomSeed);
+        for (int nodeId=0;nodeId<nodeNb;nodeId++) {
+        	
+        	Node node = Network.get(nodeId);
+        	VirusApp nodeApp = (VirusApp)node.getProtocol(this.virusAppPid);
+        	
+        	// Si le noeud n'a pas déjà son minimum de voisin requis
+        	if ((nodeApp.getListVoisins().size() < minVoisins)) {
+        		// On récupère les noeuds éligibles auquels il peut se lier (ceux n'ayant pas atteint leur max et on retire le noeud actuel)
+        		List eligibleNodes = new ArrayList(allEligibleNodeIds);
+        		eligibleNodes.remove((Object) nodeId);
+        		
+        		// Tant qu'on a pas atteint le nb minimal de voisin
+        		while (nodeApp.getListVoisins().size() < minVoisins) {
+        			// Ici on gère le cas où le noeud n'a pas atteint son nb min de voisin et qu'il n'a plus de noeud auquels se lier
+        			// Pour gérer ceci, le noeud va se connecter à un autre noeud ayant déjà atteint son nb de voisin max
+        			if (eligibleNodes.isEmpty()) {
+        				boolean isNotFix = true;
+        				// Tant qu'on a pas fait la connexion
+        				while (isNotFix) {
+        					// On récupère un noeud random
+        					int randomIndex = random.nextInt(allNodes.size());
+                			int randomNodeId = (int) allNodes.get(randomIndex);
+                			Node randomNode = Network.get(randomNodeId);
+                			VirusApp randomNodeApp = (VirusApp)randomNode.getProtocol(this.virusAppPid);
+                			// On vérifit que le noeud random n'est pas déjà un voisin
+                			if (!(nodeApp.getListVoisins().contains(randomNodeId))) {
+                				nodeApp.addVoisins(randomNodeId);
+                				randomNodeApp.addVoisins(nodeId);
+                				isNotFix = false;
+                			}
+        				}
+        			}
+        			else {
+        				// On récupère un noeud random
+        				int randomIndex = random.nextInt(eligibleNodes.size());
+            			int randomNodeId = (int) eligibleNodes.get(randomIndex);
+            			Node randomNode = Network.get(randomNodeId);
+            			VirusApp randomNodeApp = (VirusApp)randomNode.getProtocol(this.virusAppPid);
+            			// On vérifit que le noeud random n'est pas déjà un voisin
+            			if (!(nodeApp.getListVoisins().contains(randomNodeId))) {
+            				nodeApp.addVoisins(randomNodeId);
+            				randomNodeApp.addVoisins(nodeId);
+            				eligibleNodes.remove((Object) randomNodeId); // On enlève le noeud random des voisins éligibles pour pas se re-relier à lui
+            				// Si le noeud random a atteint son nombre max de voisin suite à l'ajout, on le retire des noeuds éligibles globales
+            				if (randomNodeApp.getListVoisins().size() >= maxVoisins) {
+            					allEligibleNodeIds.remove((Object) randomNodeId);
+            				}
+            			}
+            			// Si le noeud est déjà connecté au noeud random, on retire le random de la liste des noeuds éligibles
+            			else {
+            				eligibleNodes.remove((Object) randomNodeId);
+            			}
+        			}
+        			
+        		}
+        	}
+        }
+        
+        
+        // On regarde comment le réseau est constitué (nombre de noeuds ayant x voisins)
+        HashMap<Integer, Integer> myMap = new HashMap<Integer, Integer>();
+        for (int nodeId=0;nodeId<nodeNb;nodeId++) {
+        	Node node = Network.get(nodeId);
+        	VirusApp nodeApp = (VirusApp)node.getProtocol(this.virusAppPid);
+        	if (nodeApp.getListVoisins().contains(nodeId)) {
+        		System.out.println("It's a fail");
+        	}
+        	myMap.merge(nodeApp.getListVoisins().size(), 1, Integer::sum);
+        }
+        System.out.println(myMap);
+        
+      
         //We infected the n first node request in config_file
         for (int infectedNode=0;infectedNode<Configuration.getInt("nbNodeInfected");infectedNode++){
             VirusApp appInfected = (VirusApp)Network.get(infectedNode).getProtocol(this.virusAppPid);
