@@ -163,10 +163,10 @@ public class ControllerEvent implements peersim.core.Control{
 
                 if(this.nbEvent == this.endTimeSimulation-1){
 //                        System.out.println("Nombre d'infectés : " + nbInfected);
-//                        System.out.println("Nombre de sains : " + nbClean);
-//                        int exps = Configuration.getInt("simulation.experiments",1);
-//                        System.out.println("experience " + exps);
-//                        System.out.println(arrayData);
+////                        System.out.println("Nombre de sains : " + nbClean);
+////                        int exps = Configuration.getInt("simulation.experiments",1);
+////                        System.out.println("experience " + exps);
+                        System.out.println(arrayData);
                         try {
                                 FileWriter fr = new FileWriter(this.thefile, true);
                                 fr.write("[");

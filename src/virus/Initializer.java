@@ -76,26 +76,26 @@ public class Initializer implements peersim.core.Control {
         	Node node = Network.get(nodeId);
         	VirusApp nodeApp = (VirusApp)node.getProtocol(this.virusAppPid);
         	
-        	// Si le noeud n'a pas déjà son minimum de voisin requis
+        	// Si le noeud n'a pas dï¿½jï¿½ son minimum de voisin requis
         	if ((nodeApp.getListVoisins().size() < minVoisins)) {
-        		// On récupère les noeuds éligibles auquels il peut se lier (ceux n'ayant pas atteint leur max et on retire le noeud actuel)
+        		// On rï¿½cupï¿½re les noeuds ï¿½ligibles auquels il peut se lier (ceux n'ayant pas atteint leur max et on retire le noeud actuel)
         		List eligibleNodes = new ArrayList(allEligibleNodeIds);
         		eligibleNodes.remove((Object) nodeId);
         		
         		// Tant qu'on a pas atteint le nb minimal de voisin
         		while (nodeApp.getListVoisins().size() < minVoisins) {
-        			// Ici on gère le cas où le noeud n'a pas atteint son nb min de voisin et qu'il n'a plus de noeud auquels se lier
-        			// Pour gérer ceci, le noeud va se connecter à un autre noeud ayant déjà atteint son nb de voisin max
+        			// Ici on gere le cas ou le noeud n'a pas atteint son nb min de voisin et qu'il n'a plus de noeud auquels se lier
+        			// Pour gerer ceci, le noeud va se connecter a un autre noeud ayant deja atteint son nb de voisin max
         			if (eligibleNodes.isEmpty()) {
         				boolean isNotFix = true;
         				// Tant qu'on a pas fait la connexion
         				while (isNotFix) {
-        					// On récupère un noeud random
+        					// On recupere un noeud random
         					int randomIndex = random.nextInt(allNodes.size());
                 			int randomNodeId = (int) allNodes.get(randomIndex);
                 			Node randomNode = Network.get(randomNodeId);
                 			VirusApp randomNodeApp = (VirusApp)randomNode.getProtocol(this.virusAppPid);
-                			// On vérifit que le noeud random n'est pas déjà un voisin
+                			// On verifit que le noeud random n'est pas deja un voisin
                 			if (!(nodeApp.getListVoisins().contains(randomNodeId))) {
                 				nodeApp.addVoisins(randomNodeId);
                 				randomNodeApp.addVoisins(nodeId);
@@ -104,22 +104,22 @@ public class Initializer implements peersim.core.Control {
         				}
         			}
         			else {
-        				// On récupère un noeud random
+        				// On recupere un noeud random
         				int randomIndex = random.nextInt(eligibleNodes.size());
             			int randomNodeId = (int) eligibleNodes.get(randomIndex);
             			Node randomNode = Network.get(randomNodeId);
             			VirusApp randomNodeApp = (VirusApp)randomNode.getProtocol(this.virusAppPid);
-            			// On vérifit que le noeud random n'est pas déjà un voisin
+            			// On verifit que le noeud random n'est pas deje un voisin
             			if (!(nodeApp.getListVoisins().contains(randomNodeId))) {
             				nodeApp.addVoisins(randomNodeId);
             				randomNodeApp.addVoisins(nodeId);
-            				eligibleNodes.remove((Object) randomNodeId); // On enlève le noeud random des voisins éligibles pour pas se re-relier à lui
-            				// Si le noeud random a atteint son nombre max de voisin suite à l'ajout, on le retire des noeuds éligibles globales
+            				eligibleNodes.remove((Object) randomNodeId); // On enleve le noeud random des voisins eligibles pour pas se re-relier e lui
+            				// Si le noeud random a atteint son nombre max de voisin suite e l'ajout, on le retire des noeuds eligibles globales
             				if (randomNodeApp.getListVoisins().size() >= maxVoisins) {
             					allEligibleNodeIds.remove((Object) randomNodeId);
             				}
             			}
-            			// Si le noeud est déjà connecté au noeud random, on retire le random de la liste des noeuds éligibles
+            			// Si le noeud est deje connecte au noeud random, on retire le random de la liste des noeuds eligibles
             			else {
             				eligibleNodes.remove((Object) randomNodeId);
             			}
@@ -130,7 +130,7 @@ public class Initializer implements peersim.core.Control {
         }
         
         
-        // On regarde comment le réseau est constitué (nombre de noeuds ayant x voisins)
+        // On regarde comment le reseau est constitue (nombre de noeuds ayant x voisins)
         HashMap<Integer, Integer> myMap = new HashMap<Integer, Integer>();
         for (int nodeId=0;nodeId<nodeNb;nodeId++) {
         	Node node = Network.get(nodeId);
@@ -149,9 +149,7 @@ public class Initializer implements peersim.core.Control {
             appInfected.setState("Infected");
         }
         System.out.println("init done");
-        System.out.println(4%5);
-        System.out.println(5%5);
-        System.out.println(6%5);
+
         return false;
     }
 }
