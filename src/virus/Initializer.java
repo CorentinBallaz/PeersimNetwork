@@ -48,7 +48,7 @@ public class Initializer implements peersim.core.Control {
             	randomForAttributes.setSeed(randomSeed);
             }
             catch (Exception e) {
-            	System.out.println(e);
+
             }
         	currentNode = Network.get(node);
             currentNodeApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
@@ -81,7 +81,7 @@ public class Initializer implements peersim.core.Control {
             randomForNeighbor.setSeed(randomSeed);
         }
         catch (Exception e) {
-        	System.out.println(e);
+        	
         }
         for (int nodeId=0;nodeId<nodeNb;nodeId++) {
         	
