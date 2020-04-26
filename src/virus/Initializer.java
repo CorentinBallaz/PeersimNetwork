@@ -42,16 +42,23 @@ public class Initializer implements peersim.core.Control {
     	int maxGoingOutFrequency = Configuration.getInt("maxGoingOutFrequency");
         for (int node=0; node<nodeNb; node++) {
         	
-        	Random r = new Random();
+        	Random randomForAttributes = new Random();
+        	try {
+            	int randomSeed = Configuration.getInt("random.seed.attributes");
+            	randomForAttributes.setSeed(randomSeed);
+            }
+            catch (Exception e) {
+            	System.out.println(e);
+            }
         	currentNode = Network.get(node);
             currentNodeApp = (VirusApp)currentNode.getProtocol(this.virusAppPid);
 
             currentNodeApp.setNodeId(node);
 
-        	int randomFrequency = r.nextInt(maxGoingOutFrequency - minGoingOutFrequency) + minGoingOutFrequency;
+        	int randomFrequency = randomForAttributes.nextInt(maxGoingOutFrequency - minGoingOutFrequency) + minGoingOutFrequency;
         	currentNodeApp.setGoingOutFrequency(randomFrequency);
         	
-        	int randomYear = r.nextInt(maxYearOld - minYearOld) + minYearOld;
+        	int randomYear = randomForAttributes.nextInt(maxYearOld - minYearOld) + minYearOld;
         	currentNodeApp.setYearOld(randomYear);
         	
         	currentNodeApp.setState("Sensible");
@@ -68,9 +75,14 @@ public class Initializer implements peersim.core.Control {
         // NEIGHBORHOOD
         int minVoisins = Configuration.getInt("node.nbVoisinsMin");
         int maxVoisins = Configuration.getInt("node.nbVoisinsMax");
-        int randomSeed = Configuration.getInt("random.seed");
-        Random random = new Random();
-        random.setSeed(randomSeed);
+        Random randomForNeighbor = new Random();
+        try {
+        	int randomSeed = Configuration.getInt("random.seed.neighbor");
+            randomForNeighbor.setSeed(randomSeed);
+        }
+        catch (Exception e) {
+        	System.out.println(e);
+        }
         for (int nodeId=0;nodeId<nodeNb;nodeId++) {
         	
         	Node node = Network.get(nodeId);
@@ -91,7 +103,7 @@ public class Initializer implements peersim.core.Control {
         				// Tant qu'on a pas fait la connexion
         				while (isNotFix) {
         					// On recupere un noeud random
-        					int randomIndex = random.nextInt(allNodes.size());
+        					int randomIndex = randomForNeighbor.nextInt(allNodes.size());
                 			int randomNodeId = (int) allNodes.get(randomIndex);
                 			Node randomNode = Network.get(randomNodeId);
                 			VirusApp randomNodeApp = (VirusApp)randomNode.getProtocol(this.virusAppPid);
@@ -105,7 +117,7 @@ public class Initializer implements peersim.core.Control {
         			}
         			else {
         				// On recupere un noeud random
-        				int randomIndex = random.nextInt(eligibleNodes.size());
+        				int randomIndex = randomForNeighbor.nextInt(eligibleNodes.size());
             			int randomNodeId = (int) eligibleNodes.get(randomIndex);
             			Node randomNode = Network.get(randomNodeId);
             			VirusApp randomNodeApp = (VirusApp)randomNode.getProtocol(this.virusAppPid);
