@@ -1,2 +1,4 @@
 /.idea/
 *.class
+results.json
+resultat_temp.json
