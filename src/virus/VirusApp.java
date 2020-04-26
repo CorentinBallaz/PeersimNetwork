@@ -146,18 +146,9 @@ public class VirusApp implements EDProtocol {
     }
     private void receive(VirusMessage msg) {
         //System.out.println(this + ": Received " + msg.getContent());
-        if (this.isVaccined){
-            this.probToBeInfected = this.probToInfect*0.75;
-            if(msg.getProbToInfect() > this.getProbToBeInfected()){
-                this.setState("Infected");
-            }
-        }else {
-//            int probaToBeInfected = this.function1Resistance(this.yearOld) + ;
-            if(msg.getProbToInfect() > this.getProbToBeInfected()){
-                this.setState("Infected");
-            }
+    	if (!(this.isVaccined) && (msg.getProbToInfect() > this.getProbToBeInfected())){
 
-
+            this.setState("Infected");
         }
 
 
@@ -179,7 +170,7 @@ public class VirusApp implements EDProtocol {
                 double probToDeathWithAge = this.probToDeath(this.yearOld);
 
 
-                double randomProbToDeath =((Math.random() + probToDeathWithAge)/2.0)*((float)temp/((float)timeToRevocered/2.0));
+                double randomProbToDeath =((probToDeathWithAge))*((float)temp/((float)timeToRevocered/2.0));
                 if (Math.random() < randomProbToDeath){
 
                     state ="Death";
